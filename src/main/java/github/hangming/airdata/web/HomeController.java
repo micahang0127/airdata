@@ -1,4 +1,4 @@
-package github.hangming.airdata;
+package github.hangming.airdata.web;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -34,6 +34,12 @@ public class HomeController {
 		model.addAttribute("serverTime", formattedDate );
 		
 		return "home";
+	}
+	
+	@RequestMapping(value = "/demo", method = RequestMethod.GET)
+	public String demo() {
+		
+		return "demo";
 	}
 	
 }

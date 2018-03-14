@@ -1,0 +1,28 @@
+1. xml 데이터 읽어들이기 - Jsoup 을 사용 디비에 데이터를 삽입
+> https://jsoup.org/
+
+2. 30분마다 계속해서 요청을 보냄 + 크론 표현식
+* * 30 * * * => 30분마다 호출함!
+* 1 * * * * => 매일 한 호출함
+
+3. 가입/ 관심지역 등록
+
+4. 메일 전송(JavaMail)
+> Mail 템플릿 설계
+
+5. 데이블 설계는 아래와 같이..
+
+측정소1
+측정소2
+측정소3
+....
+...
+...
+
+
+6. http://openapi.airkorea.or.kr/openapi/services/rest/MsrstnInfoInqireSvc/getMsrstnList?serviceKey=LX%2Bvip8U1cIkZRIYLe%2Fj20f%2F7QAGPO8I3bIF6PRU9ILI05ynseP670tj5oAmkfnaUDKKbMPLRuQNRdosbKDN%2Fg%3D%3D&numOfRows=100&pageSize=100&pageNo=1&startPage=1&addr=%EC%84%9C%EC%9A%B8
+
+key : LX%2Bvip8U1cIkZRIYLe%2Fj20f%2F7QAGPO8I3bIF6PRU9ILI05ynseP670tj5oAmkfnaUDKKbMPLRuQNRdosbKDN%2Fg%3D%3D
+
+
+7. 리눅스 사용해서 배포 및 서버 관리 

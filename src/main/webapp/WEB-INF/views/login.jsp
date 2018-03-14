@@ -7,21 +7,16 @@
 <title>로그인</title>
 </head>
 <body>
-<h3>애플리케이션 경로 : ${ctxpath }</h3>
-<form action="${ctxpath }/doRegister" method="POST">
-
+<form action="/login" method="POST">
 <table>
 <tr>
-	<td>ID : <input type="text" name="id" /></td>
+	<td>Email : <input type="text" name="email"/></td>
 </tr>
 <tr>
-	<td>이메일 : <input type="text" name="email" /></td>
+	<td>비밀번호 : <input type="password" name="pw"/></td>
 </tr>
 <tr>
-	<td>비밀번호 <input type="text" name="pw" /></td>
-</tr>
-<tr>
-	<td><input type="submit" name="가입하기"/></td>
+	<td><input type="submit" name="login" value="로그인"/></td>
 </tr>
 </table>
 </form>

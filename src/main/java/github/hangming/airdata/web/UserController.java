@@ -27,4 +27,14 @@ public class UserController {
 		return "sucessregister";
 	}
 	
+	
+	@RequestMapping(value="/login")
+	public String login(HttpServletRequest req){
+		
+		return "login";
+	}
+	
+	
+	
+	
 }

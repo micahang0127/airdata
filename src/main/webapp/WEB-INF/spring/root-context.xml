@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-		
+	<task:scheduler id="pmScheduler"/>
+	<task:annotation-driven scheduler="pmScheduler"/>
+	
+	<context:component-scan base-package="github.hangming.airdata">
+		<context:exclude-filter type="regex" expression="github\.hangming\.airdata\.web\..*"/>
+	</context:component-scan>
+	
+	<!-- 나중에 dbcp 사용하면 다시 걷어냅니다. \ -->
+	<bean id="ds" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/airstation"></property>
+		<property name="username" value="airuser"></property>
+		<property name="password" value="1111"></property>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="ds"></property>
+		<property name="mapperLocations" value="classpath:/mybatis/mappers/*.xml"></property>
+		<property name="configLocation"  value="classpath:/mybatis/mybatis-config.xml"></property>
+		<!--
+		tiles-config.xml에 configuration/typeAliases/package에 명시하거나
+		아래와같이 property로 설정해줄 수 있음
+		<property name="typeAliasesPackage" value="github.yeori.airdata.domain"></property> 
+		-->
+	</bean>
+	
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSession"></constructor-arg>
+	</bean>
+
 </beans>

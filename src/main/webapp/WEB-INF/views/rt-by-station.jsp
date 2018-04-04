@@ -5,6 +5,53 @@
 <html>
 <head>
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+	
+var src = '${pmjson}';
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+	var srcData = JSON.parse ( src );
+	/*
+	 srcData.data = [ { ....}, { ....}, {....} ]
+	*/
+	var pmData = [
+	    ['Time', 'PM2.5', 'PM10'],
+	 
+	 ];
+	
+	for(i= 0; i< srcData.data.length; i++){
+		// 2018-03-31 19:00:00.0
+		var hh = srcData.data[i].time.substring(11, 16);
+		var pm10 = parseInt(srcData.data[i].pm10);
+		var pm25 = parseInt(srcData.data[i].pm25);
+		pmData.push ( [hh, pm25, pm10] );	
+	}
+	
+	pmData.push ( ['ddd', 32, 44 ] );
+	/*
+	   ['11:00',  45,      40],
+	    ['10:00',  11,      46],
+	    ['09:00',  66,      12]
+	*/
+	
+  var data = google.visualization.arrayToDataTable(pmData);
+
+  var options = {
+    title: '미세먼지',
+    curveType: 'function',
+    legend: { position: 'bottom' } ,
+    chartArea: { width : '100%', height: '80%'}
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('pm_chart'));
+  chart.draw(data, options);
+}
+
+</script>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
 $(function() {
@@ -23,7 +70,7 @@ $(function() {
         		var loc = $('#location').empty()
         		              .append('<option value="">[관측소]</option>');
         		var template = '<option value="@v">@t</option>';
-        		for ( var i = 0 ; res.length ; i ++ ) {
+        		for ( var i = 0 ; i < res.length ; i ++ ) {
         			var html = template.replace('@v', res[i].seq)
         			                   .replace('@t', res[i].location);
         			loc.append ( html );
@@ -82,6 +129,7 @@ $(function() {
 		
 		
 		${station.region} > ${station.location}
+		<div id="pm_chart" style="height: 300px"></div>
 		<table class="table">
 		<tr>
 			<td>관측시간</td>

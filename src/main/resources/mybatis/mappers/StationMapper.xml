@@ -6,8 +6,56 @@
 		<result column="seq" property="seq"/>
 		<result column="region" property="region"/>
 		<result column="location" property="location"/>
+		<result column="lat" property="lat"/>
+		<result column="lng" property="lng"/>
 	</resultMap>
+	
+	<resultMap type="Pmdata" id="pmMap">
+		<result column="location" property="stationName" />
+		<result column="station"  property="station" />
+		<result column="time" property="time"/>
+		<result column="pm10" property="pm10"/>
+		<result column="pm25" property="pm25"/>
+	</resultMap>
+	
 	<select id="findAll" resultMap="stationMap">
 		select * from stations;
 	</select>
+	
+	<select id="findRealTimeData" parameterType="Pmdata" resultMap="pmMap">
+	select * from pmdata where station = #{station} and `time` = #{time};
+	</select>
+	
+	<select id="findStationByName" parameterType="hashmap" resultMap="stationMap">
+		select * from stations where region = #{sido} and location = #{name};
+	</select>
+	
+	<insert id="insertRealTimeData" parameterType="Pmdata">
+		insert into pmdata ( station, `time`, pm10, pm25 ) 
+		values ( #{station}, #{time}, #{pm10Value}, #{pm25Value});
+	</insert>
+	
+	<select id="findDataByStation" parameterType="integer" resultMap="pmMap">
+		select * from pmdata where station = #{id} order by time desc limit 24;
+	</select>
+	
+	<select id="findStationBySeq" parameterType="integer" resultMap="stationMap">
+		select * from stations where seq= #{id};
+	</select>
+	
+	<select id="findStationByRegion" parameterType="string" resultMap="stationMap">
+		select * from stations where region= #{id};
+	</select>
+	
+	<select id="findRealtimeDataByRegion" parameterType="string" resultMap="pmMap">
+	select 
+		pm1.* ,
+		s.location
+	from ( select station, max(time) AS  latest from pmdata pm group by station ) pm0
+	join pmdata pm1 on pm0.latest = pm1.time and pm0.station = pm1.station 
+	join stations s on pm1.station = s.seq
+	where s.region=#{id};
+	
+	</select>
+	
 </mapper>

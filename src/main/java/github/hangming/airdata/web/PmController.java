@@ -82,4 +82,21 @@ public class PmController {
 		return json;
 	}
 	
+	@RequestMapping(value="/api/station/{sseq}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
+	@ResponseBody // 지금 리턴하는 문자열을 가지고 jsp를 찾지 마세요. 이거 자체가 응답의 본문입니다.
+	public String dataByStation (@PathVariable Integer sseq ) throws JsonProcessingException {
+		Station station = pmService.findStationBySeq ( sseq );
+		/*
+		StringBuilder sb = new StringBuilder();
+		sb.append('{');
+		sb.append ("lat : " + station.getLat());
+		
+		sb.append('}');
+		*/
+		ObjectMapper om = new ObjectMapper();
+		String json = om.writeValueAsString(station);
+//		System.out.println(" >> " + json);
+		return json;
+	}
+	
 }

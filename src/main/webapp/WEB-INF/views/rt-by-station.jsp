@@ -92,7 +92,41 @@ $(function() {
     	 */ 
     	location.href = url;
     });
+    
+    $('.nav-tabs a[href="#station-map"]').on('shown.bs.tab', function() {
+    	
+    	var p = document.location.href.lastIndexOf('/');
+    	var sseq = document.location.href.substring(p+1);
+    	
+    	$.ajax ({
+    		url : ctxpath + '/api/station/' + sseq ,
+    		method : 'GET',
+    		success : function( res ){
+    			console.log ( res );
+				drawStation( res );
+    		}
+    	});
+    })
+
 });
+function drawStation ( station ) {
+	// station.lat, station.lng;
+	// map.setCenter(station.lat, station.lng);
+	var container = document.getElementById('map');
+	var options = {
+		center: new daum.maps.LatLng(station.lat, station.lng),
+		level: 6
+	};
+	var map = new daum.maps.Map(container, options);
+	
+	// 지도를 클릭한 위치에 표출할 마커입니다
+	var marker = new daum.maps.Marker({ 
+	    // 지도 중심좌표에 마커를 생성합니다 
+	    position: map.getCenter() 
+	}); 
+	// 지도에 마커를 표시합니다
+	marker.setMap(map);
+}
 </script>
 
 
@@ -126,10 +160,19 @@ $(function() {
 		</c:forEach>
 	</select>
 	
-		
-		
-		<%-- ${station.region} > ${station.location} --%>
-		<div id="pm_chart" style="height: 300px"></div>
+	<ul class="nav nav-tabs">
+	    <li class="active"><a data-toggle="tab" href="#pm-chart">차트</a></li>
+	    <li><a data-toggle="tab" href="#station-map">지도</a></li>
+  	</ul>
+	<div class="tab-content">
+    <div id="pm-chart" class="tab-pane fade in active">
+      <%-- ${station.region} > ${station.location} --%>
+	  <div id="pm_chart" style="height: 300px"></div>
+    </div>
+    <div id="station-map" class="tab-pane fade">
+    	<div id="map" style="width:100%;height:300px;"></div>
+    </div>
+  </div>
 		<table class="table">
 		<tr>
 			<td>관측시간</td>
@@ -152,4 +195,8 @@ $(function() {
 	</div>
 </div>
 </body>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89650c8b86f387b1efdedfc796012e1d"></script>
+<script>
+
+</script>
 </html>

@@ -28,6 +28,11 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context-support</artifactId>
+		    <version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
@@ -156,6 +161,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.9.4</version>
         </dependency>
+        <!--  Java Mail -->
+        <dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency> 
+        
 		
 	</dependencies>
     <build>

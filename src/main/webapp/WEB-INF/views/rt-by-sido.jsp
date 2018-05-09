@@ -7,7 +7,7 @@
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
-function gradePm25( value ) {
+/* function gradePm25( value ) {
 	// gradePm25(34);
 	// 없음 : 0 [0, 0]
 	// 좋음 : 1 [1, 15]
@@ -71,7 +71,8 @@ function gradePm10 ( value ) {
 	return { level : level , msg : msg };
 	
 }
-function loadSidoData ( sido ) {
+ */
+ function loadSidoData ( sido ) {
 	$.ajax({
     	url : ctxpath + '/api/region/rt/' + sido ,
     	method : 'GET',

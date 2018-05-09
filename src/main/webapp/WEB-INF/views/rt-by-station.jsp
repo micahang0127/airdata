@@ -128,21 +128,23 @@ $(function() {
 	
 		
 		
-		${station.region} > ${station.location}
+		<%-- ${station.region} > ${station.location} --%>
 		<div id="pm_chart" style="height: 300px"></div>
 		<table class="table">
 		<tr>
 			<td>관측시간</td>
 			<td>PM2.5</td>
+			<td>등급(pm2.5)</td>
 			<td>PM10</td>
-			<td>등급</td>
+			<td>등급(pm10)</td>
 		</tr>
 		<c:forEach items="${pmdata}" var="pm">
 		<tr>
 			<td>${fn:substring(pm.time, 11,16)}</td>
 			<td>${pm.pm25}</td>
+			<td>xx</td><%-- <td>${gradePm25(pm.pm25).msg}</td> --%>
 			<td>${pm.pm10}</td>
-			<td>XX</td>
+			<td>xx</td><%-- <td>${gradePm10(pm.pm10.msg}</td> --%>
 		</tr>
 		</c:forEach>
 		</table>

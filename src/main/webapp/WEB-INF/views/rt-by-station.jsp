@@ -51,6 +51,12 @@ function drawChart() {
   chart.draw(data, options);
 }
 
+function resize () {
+    //var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    // chart.draw(data, options);
+    drawChart();
+}
+window.onresize = resize;
 </script>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
@@ -129,11 +135,6 @@ function drawStation ( station ) {
 }
 </script>
 
-
-
-
-
-
 <title>[시도명]관측소</title>
 </head>
 <body>
@@ -141,7 +142,7 @@ function drawStation ( station ) {
 <jsp:include page="/WEB-INF/views/common/nav-header.jsp"></jsp:include>
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-xs-12 col-sm-6">
+		<div class="col-xs-12">
 		<!--
 		[시도명] - [관측소] 
 		 -->

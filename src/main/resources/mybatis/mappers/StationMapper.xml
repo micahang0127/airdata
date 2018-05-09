@@ -16,6 +16,9 @@
 		<result column="time" property="time"/>
 		<result column="pm10" property="pm10"/>
 		<result column="pm25" property="pm25"/>
+		<result column="lat" property="lat"/>
+		<result column="lng" property="lng"/>
+		
 	</resultMap>
 	
 	<select id="findAll" resultMap="stationMap">
@@ -50,7 +53,9 @@
 	<select id="findRealtimeDataByRegion" parameterType="string" resultMap="pmMap">
 	select 
 		pm1.* ,
-		s.location
+		s.location,
+		s.lat,
+		s.lng
 	from ( select station, max(time) AS  latest from pmdata pm group by station ) pm0
 	join pmdata pm1 on pm0.latest = pm1.time and pm0.station = pm1.station 
 	join stations s on pm1.station = s.seq

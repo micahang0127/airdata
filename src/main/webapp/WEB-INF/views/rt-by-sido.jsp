@@ -91,6 +91,7 @@ function gradePm10 ( value ) {
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
     			loc.append ( html );
     		}
+    		drawStation(res);
     	}, 
     	error : function ( xhr, state, error ) {
 			console.log ( xhr );        		
@@ -120,6 +121,68 @@ $(function() {
     
     loadSidoData ( '${sidoName}' );
 });
+    
+    
+function drawStation ( stations ) {
+	// station.lat, station.lng;
+	// map.setCenter(station.lat, station.lng);
+	// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+	var bounds = new daum.maps.LatLngBounds();  
+	
+	var container = document.getElementById('map');
+	var options = {
+		center: new daum.maps.LatLng(stations[0].lat, stations[0].lng),
+		level: 7
+	};
+	
+	var map = new daum.maps.Map(container, options);
+	
+	var infowin =  new daum.maps.InfoWindow({ 
+		    content : '',
+		    removable : true
+	});
+	
+	for(var i=0; i<stations.length; i++){
+		// 공공API에서 위도가 경도보다 큰 데이터가 들어옴. 보정해줌		
+		var lat = Math.min(stations[i].lat, stations[i].lng);
+		var lng = Math.max(stations[i].lat, stations[i].lng);
+		if(lat==0 && lng==0){
+			continue;
+		}
+		var marker = new daum.maps.Marker({ 
+		    position: new daum.maps.LatLng(lat, lng),
+		    clickable : true,
+		    title : stations[i].stationName
+		}); 
+		// 지도에 마커를 표시합니다
+		marker.setMap(map);
+		
+		// LatLngBounds 객체에 좌표를 추가합니다
+	    bounds.extend(marker.getPosition());
+		
+	 // 마커에 클릭이벤트를 등록합니다
+	 // javascript 클로저가 문제를 일으킴!
+	 	/*
+	 	 ( function( m, s ) {
+		    daum.maps.event.addListener(m, 'click', function() {
+		    	infowin.setContent( s.stationName );
+		    	infowin.open(map, m);
+		    });
+		 }) ( marker, stations[i] );
+	 */
+	     addMarker ( map,infowin, marker, stations[i] );
+	}
+	map.setBounds(bounds);
+}
+
+function addMarker  (map, infowin, marker, station ) {
+    daum.maps.event.addListener(marker, 'click', function() {
+    	infowin.setContent( station.stationName );
+    	infowin.open(map, marker);
+    });
+}
+
+    
 </script>
 
 
@@ -146,6 +209,8 @@ $(function() {
 			</c:forEach>
 		</select>	
 		
+		
+    	<div id="map" style="width:100%;height:300px;"></div>
 		
 		<h3>${region}</h3>
 		<table class="table" id="location">
@@ -176,4 +241,5 @@ $(function() {
 	</div>
 </div>
 </body>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89650c8b86f387b1efdedfc796012e1d"></script>
 </html>

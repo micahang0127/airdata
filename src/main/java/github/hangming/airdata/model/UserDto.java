@@ -6,11 +6,7 @@ public class UserDto {
 	private String email;
 	private String password;
 	
-	public UserDto(Long seq, String email, String password) {
-		this.seq = seq;
-		this.email = email;
-		this.password = password;
-	}
+
 
 	public Long getSeq() {
 		return seq;

@@ -4,10 +4,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 <title>가입성공</title>
 </head>
 <body>
-가입에 성공하였습니다.
-
+<jsp:include page="/WEB-INF/views/common/nav-header.jsp"></jsp:include>
+<script type="text/javascript">
+alert('가입에 성공하셨습니다.');
+/* window.href="home"; */
+</script>
 </body>
 </html>

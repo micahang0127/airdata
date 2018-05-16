@@ -44,7 +44,7 @@
 	
 	<select id="findStationBySeq" parameterType="integer" resultMap="stationMap">
 		select * from stations where seq= #{id};
-	</select>
+	</select> <!-- 값을 받아와 넘겨줘야 하는 인자가 하나일 때는 id로 써도 가능하다.  -->
 	
 	<select id="findStationByRegion" parameterType="string" resultMap="stationMap">
 		select * from stations where region= #{id};

@@ -1,22 +1,21 @@
 package github.hangming.airdata.service;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import github.hangming.airdata.dao.IUserDao;
+import github.hangming.airdata.dao.UserDao;
 import github.hangming.airdata.model.UserDto;
 
 @Service
-public class UserService implements IUserService{
+public class UserService{
 
-//	@Autowired
+/*	@Autowired
 	private IUserDao userDao = new FakeUserDao();
-	
-	@Override
-	public UserDto login(String email, String password) {
-		
-		return userDao.login(email, password);
-	}
 	
 	static class FakeUserDao implements IUserDao {
 
@@ -31,6 +30,25 @@ public class UserService implements IUserService{
 			}
 //			return new UserDto (100000L, email, password);
 		}
+	}*/
+	
+	
+	@Autowired UserDao dao;
+
+	
+	public List<UserDto> getUser(UserDto vo) {
+		return dao.getUser(vo);
 	}
+	
+	
+	public UserDto getEmailCheck(String email){  // 회원가입시 이메일 중복확인
+		return dao.getEmailCheck(email);
+	}
+	
+	public UserDto insertUser(UserDto vo){
+		return  dao.insertUser(vo);
+	}
+	
+	
 
 }

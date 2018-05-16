@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="UserMapper"> 
+	
+	<!-- <resultMap type ="User" id="resultMap">
+		<result column="seq" javaType="Long"/>
+		<result column="email" javaType="String"/>
+		<result column="pw" javaType="String"/>		
+	</resultMap> -->
+	 
+	<select id="getEmailCheck" parameterType="string" resultType="github.hangming.airdata.model.UserDto">
+	select * from user where email = #{id}
+	</select>
+	
+	<insert id="insertUser" parameterType="github.hangming.airdata.model.UserDto">
+	insert into user (email, password) values ( #{email}, #{password})
+	</insert>
+
+	
+	
+	
+</mapper>

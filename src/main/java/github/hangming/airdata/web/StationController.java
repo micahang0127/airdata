@@ -40,14 +40,14 @@ public class StationController {
 		
 		List<Station> stations = Arrays.asList(s0, s1);
 		*/
-		List<Station> stations = stationService.findByRegion(region);
+		List<Station> stations = stationService.findByRegion(region);  // seq가 같은 값에 station테이블 전체를 select( 칼럼 seq, region, location, lat, lng )
 		/*
 		 *  stations => [ 
 		 *      {"seq":1000, "location":"중구"} , 
 		 *      {"seq":1001, "location"="한강"}
 		 *  ] 
 		 */
-		ObjectMapper om = new ObjectMapper(); // 변환 작업을 해주는 클래스
+		ObjectMapper om = new ObjectMapper(); // 변환 작업을 해주는 클래스 (주로json사용할때 사용)
 		String json = om.writeValueAsString(stations);
 		System.out.println("JSON string : " + json);
 		return json;

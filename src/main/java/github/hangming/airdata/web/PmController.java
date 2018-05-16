@@ -30,14 +30,14 @@ public class PmController {
 	
 	@RequestMapping(value="/rt/{stationSeq}", method=RequestMethod.GET)
 	public String realtimeData (@PathVariable Integer stationSeq, Model model ) throws JsonProcessingException {
-		List<Pmdata> data = pmService.findByStation( stationSeq );
+		List<Pmdata> data = pmService.findByStation( stationSeq );  // 최근 24시간 동안의 pmdata테이블의 station(시도seq값)이 같은 것의 전체를 select( pm10, pm25, time, station )
 		System.out.println("콘트롤러 여기"+data);
 		model.addAttribute("pmdata", data);
 		
-		Station station = pmService.findStationBySeq ( stationSeq );
+		Station station = pmService.findStationBySeq ( stationSeq );  // seq가 같은 것의 stations테이블 전체 select( seq, region, location, lat, lng )
 		String region = station.getRegion();
 		
-		List<Station> stations = stationService.findByRegion(region);
+		List<Station> stations = stationService.findByRegion(region); // region(관측소)이 같은 것의 stations테이블 전체 select
 		
 		model.addAttribute("stations",stations);
 		/*

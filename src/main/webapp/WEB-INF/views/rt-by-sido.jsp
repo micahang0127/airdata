@@ -78,7 +78,7 @@ function gradePm10 ( value ) {
     	method : 'GET',
     	success : function ( res ) {
     		console.log ( res );
-    		var loc = $('#location > tbody').empty();
+    		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
     		var template = '<tr><td><a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
     		var tmp = res;
     		for ( var i = 0 ; i < res.length ; i ++ ) {
@@ -192,7 +192,7 @@ function addMarker  (map, infowin, marker, station ) {
 
 <title>[시도명]관측소</title>
 </head>
-<body>
+<body>  <!-- 각 시도까지만 전체적으로 파악페이지  -->
 <!-- 곹통 네비게이션 -->
 <jsp:include page="/WEB-INF/views/common/nav-header.jsp"></jsp:include>
 <div class="container-fluid">
@@ -202,8 +202,8 @@ function addMarker  (map, infowin, marker, station ) {
 		[시도명] - [관측소] 
 		 -->
  		<select name="sido" id="sido">
-			<option value="">카테고리1</option>
-			<!-- <option value="서울">서울</option> -->
+			<option value="">지역</option>
+			<!-- <option value="서울">서울</option>      sido = 서울,경기,강원,... / region = (서울안)중구, 은평구...같은 관측소-->
 			<c:forEach items="${sido}" var="region" >
 			<option value="${region}">${region}</option>
 			</c:forEach>

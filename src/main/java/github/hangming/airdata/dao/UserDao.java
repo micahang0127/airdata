@@ -1,6 +1,8 @@
 package github.hangming.airdata.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,17 @@ public class UserDao implements IUserDao {
 	@Autowired
 	private SqlSession session;
 	
-	public List<UserDto> getUser(UserDto vo) {
+	public UserDto getUser(String email, String password) {
 		//IUserDao dao = session.getMapper(IUserDao.class);
-		return session.selectList("UserMapper.getUser", vo);
+		// 1. email+ password = > userDto
+		// 2. HashMap 
+//		UserDto u = new UserDto();
+//		u.setEmail(email);
+//		u.setPassword(password);
+		Map<String, String> u = new HashMap<String, String>();
+		u.put("email", email);
+		u.put("password", password);
+		return session.selectOne("UserMapper.getUser", u);
 	}
 	
 	

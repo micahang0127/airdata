@@ -7,6 +7,9 @@
 		<result column="email" javaType="String"/>
 		<result column="pw" javaType="String"/>		
 	</resultMap> -->
+	<select id="getUser" parameterType="map" resultType="github.hangming.airdata.model.UserDto">
+	select * from user where email = #{email} and password = #{password}
+	</select>
 	 
 	<select id="getEmailCheck" parameterType="string" resultType="github.hangming.airdata.model.UserDto">
 	select * from user where email = #{id}

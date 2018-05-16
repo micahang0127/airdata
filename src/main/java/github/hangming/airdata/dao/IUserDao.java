@@ -6,7 +6,7 @@ import github.hangming.airdata.model.UserDto;
 
 public interface IUserDao {
 	
-	List<UserDto> getUser(UserDto vo); // <--
+	UserDto getUser(String email, String password); // <--
 	UserDto getEmailCheck( String vo);
 	UserDto insertUser( UserDto vo); // OK
 	/*	UserDto getUser(UserDto vo);

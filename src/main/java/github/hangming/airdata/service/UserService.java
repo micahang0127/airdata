@@ -35,9 +35,9 @@ public class UserService{
 	
 	@Autowired UserDao dao;
 
-	
-	public List<UserDto> getUser(UserDto vo) {
-		return dao.getUser(vo);
+	// 로그인용 메소드
+	public UserDto getUser(String email, String password) {
+		return dao.getUser(email, password);
 	}
 	
 	

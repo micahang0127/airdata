@@ -53,12 +53,32 @@ public class UserController {
 			return "login";
 		}
 		*/
-		return "index";
+		return "login";
+	}
+	
+	@RequestMapping(value = "/succLogin", method=RequestMethod.POST)
+	@ResponseBody
+	public String doLogin(
+			HttpSession session,
+			@RequestParam String email, 
+			@RequestParam(name="pw") String pw) {
+		// HttpSession session = req.getSession(); // servlet 
+		UserDto user = userService.getUser(email, pw);
+		if(user != null){
+			session.setAttribute("LOGIN_USER", user);
+			return "{\"success\" : true }";
+		}
+		else{
+			return "{\"success\" : false }";
+		}
+		//return "{}"; // "{}.jsp"
+		 
 	}
 	
 	
 	@RequestMapping(value="/checkEmail", method=RequestMethod.GET)
-	@ResponseBody String checkEmail(@RequestParam String email ){ // 2
+	@ResponseBody 
+	String checkEmail(@RequestParam String email ){ // 2
 //		String email = req.getParameter("email"); // 1.
 		
 		System.out.println("이메일 중복확인부분 :" + email +"서비스이메일부분" );
@@ -81,7 +101,28 @@ public class UserController {
 		System.out.println("새 유저 등록 아이디" + vo.getEmail());
 		return "{\"success\" : true }";
 	}
+	
+	
+	@RequestMapping(value="/logout")
+	String logout(HttpSession session){
+		// session.removeAttribute("LOGIN_USER");
+		session.invalidate();
+		return "redirect:/";
+	}
 
+	// TODO /myinfo
+	/*
+	 * 
+	 * [기존 password] <<<
+	 * [새 password]<<<    [새 password]
+	 * 
+	 * server :
+	 * 1. 로그인 한 상태이어야 함 
+	 * 2. 기존password가 맞아야 함!
+	 * 3. 패스워드 업데이트
+	 * 
+	 * 
+	 */
 
 }
 	

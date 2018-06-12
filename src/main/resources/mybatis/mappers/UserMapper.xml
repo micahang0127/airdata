@@ -11,6 +11,7 @@
 	select * from user where email = #{email} and password = #{password}
 	</select>
 	 
+
 	<select id="getEmailCheck" parameterType="string" resultType="github.hangming.airdata.model.UserDto">
 	select * from user where email = #{id}
 	</select>
@@ -19,6 +20,9 @@
 	insert into user (email, password) values ( #{email}, #{password})
 	</insert>
 
+	<update id="changePw" parameterType="github.hangming.airdata.model.UserDto">
+	update user set password = #{password} where email = #{email}
+	</update>
 	
 	
 	

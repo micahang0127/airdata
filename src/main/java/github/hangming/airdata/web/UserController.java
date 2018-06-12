@@ -3,6 +3,7 @@ package github.hangming.airdata.web;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,8 @@ public class UserController {
 		UserDto user = userService.getUser(email, pw);
 		if(user != null){
 			session.setAttribute("LOGIN_USER", user);
+			session.setAttribute("email", email);
+			session.setAttribute("password", pw);
 			return "{\"success\" : true }";
 		}
 		else{
@@ -86,9 +89,9 @@ public class UserController {
 //		System.out.println("중복아이디 있다");
 //		// {"dup" :false }, {"dup" : true } 
 //		return 1;
-		if(user != null){
+		if(user != null || email.equals("")){ 
 			return "{\"dup\" : true }";
-		} else {
+		}else {
 			return "{\"dup\" : false }";
 		}
 	}
@@ -102,6 +105,7 @@ public class UserController {
 		return "{\"success\" : true }";
 	}
 	
+
 	
 	@RequestMapping(value="/logout")
 	String logout(HttpSession session){
@@ -109,7 +113,45 @@ public class UserController {
 		session.invalidate();
 		return "redirect:/";
 	}
+	
+	
+	@RequestMapping(value="/myInfo")
+	String myInfo(HttpSession session){
+		
+		if(session.getAttribute("LOGIN_USER") != null){
+			
+			//session.getAttribute("email");
+			//session.getAttribute("password");
+			System.out.println("email, 비번 확인:"+session.getAttribute("email")+","+session.getAttribute("password"));
+			
+		
+			return "myInformation";
 
+		}else{
+			System.out.println("로그인이 안 되어있어요");
+			return "";
+		}
+	}
+	
+	@RequestMapping(value="/changePassword")
+	@ResponseBody
+	String changePw(HttpSession session, UserDto vo){
+		if(session.getAttribute("LOGIN_USER") != null){
+			System.out.println("changePw 콘트롤러 진입, vo.getPassword : "+ vo.getPassword());
+			userService.changePw(vo);
+			System.out.println("새 비번 등록 성공?"+ vo.getPassword()+"email"+ vo.getEmail());
+			return "{\"success\" : true}";
+			
+		}else{
+			System.out.println("여기는 실패 ㅠ ");
+			return "{\"fail\" : false}";
+		}
+	}
+	
+	
+
+	
+	
 	// TODO /myinfo
 	/*
 	 * 

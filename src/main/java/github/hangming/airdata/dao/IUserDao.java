@@ -9,7 +9,8 @@ public interface IUserDao {
 	UserDto getUser(String email, String password); // <--
 	UserDto getEmailCheck( String vo);
 	UserDto insertUser( UserDto vo); // OK
-	/*	UserDto getUser(UserDto vo);
+	UserDto changePw( UserDto vo);
+/*	UserDto getUser(UserDto vo);
 	
 	UserDto getEmailCheck(UserDto vo);
 	

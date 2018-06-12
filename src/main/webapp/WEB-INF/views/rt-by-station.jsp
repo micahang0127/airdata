@@ -162,7 +162,7 @@ $(function() {
     
     $("#location").change(function(){
     	var stationId = $(this).val() ;
-    	var url = '/airdata/rt/' + stationId ;
+    	var url = ctxpath + '/rt/' + stationId ;
     	/*
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 

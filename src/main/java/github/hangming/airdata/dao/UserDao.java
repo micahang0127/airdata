@@ -29,6 +29,7 @@ public class UserDao implements IUserDao {
 		return session.selectOne("UserMapper.getUser", u);
 	}
 	
+
 	
 	public UserDto getEmailCheck(String email){  // 회원가입시 이메일 중복확인
 		//IUserDao dao = session.getMapper(IUserDao.class);
@@ -38,6 +39,13 @@ public class UserDao implements IUserDao {
 	public UserDto insertUser(UserDto vo){
 		//IUserDao dao = session.getMapper(IUserDao.class);
 		session.insert("UserMapper.insertUser", vo);
+		return vo;
+	}
+
+
+	
+	public UserDto changePw(UserDto vo) {
+		session.update("UserMapper.changePw", vo);
 		return vo;
 	}
 

@@ -5,6 +5,29 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
+ 
+<style>
+ .table{
+ 	width: 400px;
+	margin: auto;
+ 	height: 150px;
+ 	margin-top: 50px;
+ }
+ td{
+ 	text-align: center;
+ }
+ .login_td{
+ 	text-align: right;
+ }
+ #login-error{
+ 	color: red;
+ 	text-align: center;
+ 	margin-top: 50px;
+ }
+
+</style>
+
+
 <script type="text/javascript">
 
 	var ctxpath = '${pageContext.request.contextPath}';
@@ -30,7 +53,7 @@
 					location.href = ctxpath;
 				}
 				else{
-					$('#login-error').html('로그인에 실패했습니다.');
+					$('#login-error').html('로그인에 실패했습니다. 다시 시도해 주세요');
 				}
 			}
 		})
@@ -51,17 +74,21 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/common/nav-header.jsp"></jsp:include>
-<div id="login-error"></div>
 <form action="/login" method="POST">
-<table>
+<h2 style="margin-top: 100px; text-align: center;">로그인</h2>
+<div id="login-error"></div>
+<table class="table">
 <tr>
-	<td>Email : <input type="text" name="email" id="email"/></td>
+	<td>Email : </td>
+	<td><input type="text" name="email" id="email"/></td>
 </tr>
 <tr>
-	<td>비밀번호 : <input type="password" name="pw" id="pw"/></td>
+	<td>비밀번호 : </td>
+	<td><input type="password" name="pw" id="pw"/></td>
 </tr>
 <tr>
-	<td><input id="btnlogin" type="submit" name="login" value="로그인"/></td>
+	<td></td>
+	<td class="login_td"><input id="btnlogin" type="submit" name="login" value="로그인"/></td>
 </tr>
 </table>
 </form>

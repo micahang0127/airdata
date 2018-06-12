@@ -49,6 +49,9 @@ public class UserService{
 		return  dao.insertUser(vo);
 	}
 	
+	public UserDto changePw(UserDto vo){
+		return dao.changePw(vo);
+	}
 	
 
 }

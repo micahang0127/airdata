@@ -15,7 +15,7 @@
 		<c:if test="${not empty LOGIN_USER }">
 		<div class="navbar-login">
 			<ul class="nav navbar-nav navbar-right">
-				<li class=""><a href="<c:url value="/myinfo"/>"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="link-text">내정보</span></a></li>
+				<li class=""><a href="<c:url value="/myInfo"/>"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="link-text">내정보</span></a></li>
 			</ul>
 		</div>
 		</c:if>
@@ -24,13 +24,13 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class=""><a href="<c:url value="/"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
 				<c:if test="${empty LOGIN_USER }">
-				<li><a href="<c:url value="/join"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">가입하기</span></a></li>
+				<li><a href="<c:url value="/register"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">가입하기</span></a></li>
 				<li><a href="<c:url value="/login"/>"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span><span class="link-text">로그인</span></a></li>
 				</c:if>
 				<c:if test="${not empty LOGIN_USER }">
 				<li><a href="<c:url value="/logout"/>"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span><span class="link-text">로그아웃</span></a></li>
 				</c:if>
-				<li><a href="<c:url value="/stat/lastest"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">미세먼지현황(36분 전)</span></a></li>
+				<li><a href="<c:url value="/region/rt/서울"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">미세먼지현황(36분 전 같이시간표시))</span></a></li>
 			</ul>
 		</div>
 	</div>
@@ -39,11 +39,12 @@
 <script type="text/javascript">
 $(document).ready( function () {
 	
-	$('#btn-menu').on('click', function(e) {
+	$('#btn-menu').on('click', function(e) { // $()  ==  $(document).ready(function(){   } ); 
 		var clickedButton = e.target;
 		var menu = $( $(e.target).data('target'));
 		 // toggleClass : 붙어있으면 떼고, 없으면 붙이고!
-		menu.toggleClass('collapse');
+			menu.toggleClass('collapse');
+		
 	});
 });
 </script>

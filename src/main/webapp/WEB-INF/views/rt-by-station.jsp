@@ -203,6 +203,66 @@ function drawStation ( station ) {
 	// 지도에 마커를 표시합니다
 	marker.setMap(map);
 }
+
+
+function grade(){
+	
+	var srcData = JSON.parse( src );
+	console.log('grade진입 '+ src);
+	var pmData = [
+		['Time', 'pm2.5', 'pm10' ],
+	];
+	
+	
+	for(i=0; i< srcData.data.length; i++){
+		
+		var hh = srcData.data[i].time.substring(11, 16);
+		var pm10 = parseInt(srcData.data[i].pm10);
+		var pm25 = parseInt(srcData.data[i].pm25);
+		
+	}
+	
+	return pmData;
+	
+	
+}
+
+$(function(){
+	grade();
+})
+
+/* $("#grade").change(function(){
+	var 
+
+});
+} */
+ 
+/* $(function() {
+	
+	alert('진입');
+	
+	var pm25 = '${pm.pm25}';
+	console.log('1.'+ pm25);
+	var pm10 = '${pm.pm10}';
+	var pm25_grade;
+	var pm10_grade;
+	
+	gradePm25(pm25);
+	console.log('2.'+ gradePm25(pm25));
+	gradePm10(pm10);
+	
+	pm25_grade = gradePm25(pm25).msg;
+	console.log('3.'+pm25_grade);
+	pm10_grade = gradePm25(pm10).msg;
+	console.log('여기 1,2,3 보시오');
+	
+	$('#pm25_grade').val(pm25_grade);
+	$('#pm10_grade').val(pm10_grade);
+	
+	
+	return pm25_grade;
+
+});  */
 /* 
 function loadSidoData( res ){
 	$.ajax({
@@ -287,9 +347,9 @@ function loadSidoData( res ){
 		<tr>
 			<td>${fn:substring(pm.time, 11,16)}</td>
 			<td>${pm.pm25}</td>
-			<td>xx</td>
+			<td></td>
 			<td>${pm.pm10}</td>
-			<td>xx</td> 
+			<td></td> 
 		</tr>
 		</c:forEach>
 		</tbody>

@@ -1,5 +1,13 @@
 package github.hangming.airdata.service;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,6 +18,7 @@ import org.springframework.stereotype.Service;
 import github.hangming.airdata.dao.IUserDao;
 import github.hangming.airdata.dao.UserDao;
 import github.hangming.airdata.model.UserDto;
+import github.hangming.airdata.util.Util;
 
 @Service
 public class UserService{
@@ -34,6 +43,7 @@ public class UserService{
 	
 	
 	@Autowired UserDao dao;
+	@Autowired EmailService emailService ;
 
 	// 로그인용 메소드
 	public UserDto getUser(String email, String password) {
@@ -46,7 +56,18 @@ public class UserService{
 	}
 	
 	public UserDto insertUser(UserDto vo){
-		return  dao.insertUser(vo);
+		// 1. db에 넣고
+		UserDto user = dao.insertUser(vo);
+		
+		String html = Util.readTemplate("newmember");
+		html = html.replace("{email}", vo.getEmail());
+		html = html.replace("{pass}", vo.getPassword());
+		
+		String email = vo.getEmail();
+		String title = "[회원가입 완료]";
+		emailService.sendTestMail(email, title, html);
+		
+		return user;		
 	}
 	
 	public UserDto changePw(UserDto vo){

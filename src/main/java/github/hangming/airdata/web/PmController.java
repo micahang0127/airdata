@@ -3,6 +3,8 @@ package github.hangming.airdata.web;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,6 +60,8 @@ public class PmController {
 	}
 	
 	
+	
+	
 	@RequestMapping(value="/region/rt/{sido}", method=RequestMethod.GET)
 	public String dataBysido(@PathVariable String sido, Model model) {
 		List<Pmdata> data = pmService.findRealtimeDataByRegion(sido);
@@ -99,4 +103,18 @@ public class PmController {
 		return json;
 	}
 	
+	
+	@RequestMapping(value="/station_grade", method=RequestMethod.GET)
+	@ResponseBody
+	public String grade(){
+		//session.
+		return "{\"grade_msg\" :\"grade_msg\"}";
+		
+	}
+	
+	
+	
+	
+	
 }
+

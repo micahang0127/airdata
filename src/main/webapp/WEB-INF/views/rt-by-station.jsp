@@ -7,7 +7,7 @@
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-
+/* ★★★   html페이지가 먼저 로드 된 후 !!!! script 실행된다  ( 데이터 삽입할 때 참고. )*/
 
 function gradePm25( value ) {
 	// gradePm25(34);
@@ -151,6 +151,7 @@ $(function() {
         			                   .replace('@t', res[i].location);
         			loc.append ( html );
         		}
+        		
         	}, 
         	error : function ( xhr, state, error ) {
 				console.log ( xhr );        		
@@ -166,6 +167,8 @@ $(function() {
     	/*
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 
+    	 
+    	
     	location.href = url;
     });
     
@@ -180,7 +183,9 @@ $(function() {
     		success : function( res ){
     			console.log ( res );
 				drawStation( res );
+				
     		}
+    	
     	});
     })
 
@@ -205,65 +210,205 @@ function drawStation ( station ) {
 }
 
 
-function grade(){
-	
-	var srcData = JSON.parse( src );
-	console.log('grade진입 '+ src);
-	var pmData = [
-		['Time', 'pm2.5', 'pm10' ],
-	];
-	
-	
-	for(i=0; i< srcData.data.length; i++){
-		
-		var hh = srcData.data[i].time.substring(11, 16);
-		var pm10 = parseInt(srcData.data[i].pm10);
-		var pm25 = parseInt(srcData.data[i].pm25);
-		
-	}
-	
-	return pmData;
-	
-	
-}
 
 $(function(){
-	grade();
-})
+		
+	//	console.log("html에 나열된 pm25데이터"+$('#pm25').text());  => 이렇게 가져오면 (X). td첫줄 값에 있는 데이터만 가저옴.
+	var srcData = JSON.parse( src);
+	
+	//src = 
+	//	{ "data": [{"pm10":"16","pm25":"9","time":"2018-06-13 02:00:00.0","station":360,
+	//				"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
+	//			   ]}
 
-/* $("#grade").change(function(){
-	var 
+		
+	// $("#grade_25").html(gradePm25_msg); //=> (역시나 X). html 첫출(td)에만 들어감.ㅠ
+	// ★★★  javaScript 변수를 < % % > 로 자바코드로 넘겨 줄 수 없음!!! ( 반대로는 가능  )
+	var gradePm25_msg; 
+	var gradePm10_msg;
+	var gradePm_msg_arr = { gradePm25_msg  : gradePm25_msg };
+	
+	
+		
+		$.ajax({
+			url : ctxpath + '/station_grade',
+			method : 'GET',
+		 //	data : {
+		//		grade25_msg : grade25_msg,
+		//		grade10_msg : grade10_msg
+		//	}, 
+			success : function( data ){  // aa(여기서 맘대로 지정)는 연결 controller에 return 값을 말한다. 
+				
+				var loc25 = $('tr > #grade_25').empty();	// ★★★ $('#grade_25') 로 하면 첫줄만 나옴 ㅠ 왠지 모름 ㅠㅠ 
+		//	var loc10 = $('tr > #grade10').empty();
+				var template_g = '{grade}';
+				var html_g= "_";
+		//	var template10 = '<td>{grade id="grade10"}</td>'	;
+		//	var template = '<td id="grade_10">{gra10}</td>'
+	
 
-});
-} */
+			for(i=0; i < srcData.data.length; i++ ){
+					
+					
+					var hh = srcData.data[i].time.substring(11, 16);
+					var pm25 = parseInt(srcData.data[i].pm25);	
+					var pm10 = parseInt(srcData.data[i].pm10);
+				
+					gradePm_msg_arr.gradePm25_msg = gradePm25(pm25).msg;
+					//gradePm10_msg = gradePm10(pm10).msg;
+
+					console.log('1.여기');
+					console.log(' gradePm_msg_arr는' + gradePm_msg_arr.gradePm25_msg );	// ★★★ 데이터 하나씩 안 들어가기 때문에 object로 생성후 데이터 하나씩 뽑아 append한다 (안그럼 전체 데이터가 통채로 다들어감.)
+ 	
+
+				if(true){ //$('tr > #grade_25'
+							//★★★	$("#grade_25").html(gradePm25_msg); // 이거 쓰면 for문 더이상 안 돌고 첫값만 빼고 html()로 코드삽입후 종료됨.
+							
+						
+							html_g = template_g.replace('{grade}',  gradePm_msg_arr.gradePm25_msg );
+							loc25.append(html_g);
+							console.log('loc25.append : '+loc25.append(html_g));
+							//$('#grade_25').val(grade25_msg);
+							
+							
+						}/* 
+						
+						
+						
+						
+					}
+					 if($('tr > #grade10')){
+						
+						//html = template10.replace('{grade}', grade10_msg);
+						//$('#grade_10').html(grade10_msg);
+						//return grade10_msg;
+						console.log('2.저기');
+				 		html_g = template_g.replace('{grade}', grade10_msg);
+						loc10.append(html_g); 
+						
+					
+						
+					} 
+					else{
+						console.log('해당 등급위치를 찾지 못하였습니다.');
+					}
+				 */
+				}// for end;
+		
+			
+			} // success end
+
+		});
+
  
-/* $(function() {
-	
-	alert('진입');
-	
-	var pm25 = '${pm.pm25}';
-	console.log('1.'+ pm25);
-	var pm10 = '${pm.pm10}';
-	var pm25_grade;
-	var pm10_grade;
-	
-	gradePm25(pm25);
-	console.log('2.'+ gradePm25(pm25));
-	gradePm10(pm10);
-	
-	pm25_grade = gradePm25(pm25).msg;
-	console.log('3.'+pm25_grade);
-	pm10_grade = gradePm25(pm10).msg;
-	console.log('여기 1,2,3 보시오');
-	
-	$('#pm25_grade').val(pm25_grade);
-	$('#pm10_grade').val(pm10_grade);
-	
-	
-	return pm25_grade;
+		 
+		 
+		 
 
-});  */
+	
+});
+
+
+
 /* 
+ $(function(){		// ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ 
+	
+	var srcData = JSON.parse( src );
+	console.log('grade진입  src는 이것이다'+ src);
+	
+	//src = 
+	//	{ "data": [{"pm10":"16","pm25":"9","time":"2018-06-13 02:00:00.0","station":360,
+	//				"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
+	//			   ]}
+	
+	var grade25_msg;
+	var grade10_msg;
+	
+	
+	 	
+		$.ajax({
+			url : ctxpath + '/station_grade',
+			method : 'GET',
+		// 	data : {
+		//		grade25_msg : grade25_msg,
+		//		grade10_msg : grade10_msg
+		//	}, 
+			success : function( aa ){  // aa(여기서 맘대로 지정)는 연결 controller에 return 값을 말한다. 
+				 
+				console.log('등급 ajax 진입');
+				var loc25 = $('#grade_25').empty();
+				var loc10 = $('tr > #grade10').empty();
+				var template_g = '{grade}';
+			//	var template10 = '<td>{grade id="grade10"}</td>'	;
+			//	var template = '<td id="grade_10">{gra10}</td>'
+				var html_g= "_";
+			 
+			
+				for(i=0; i< srcData.data.length; i++){
+					
+					var hh = srcData.data[i].time.substring(11, 16);
+					var pm10 = parseInt(srcData.data[i].pm10);
+					var pm25 = parseInt(srcData.data[i].pm25);
+					
+					
+					grade25_msg = gradePm25(pm25).msg;
+					grade10_msg= gradePm10(pm10).msg;
+					
+					
+						
+					if($('tr > #grade_25')){
+						
+	//					$('#grade_25').html(grade25_msg);
+						//return grade25_msg;
+
+						html_g = template_g.replace('{grade}', grade25_msg );
+						loc25.append(html_g);
+						console.log('1.여기');
+						console.log(' grade25_mag는' + grade25_msg);
+						//console.log('loc25.append : '+loc25.append(html_g));
+						//$('#grade_25').val(grade25_msg);
+						
+						
+					}
+					 if($('tr > #grade10')){
+						
+						//html = template10.replace('{grade}', grade10_msg);
+						//$('#grade_10').html(grade10_msg);
+						//return grade10_msg;
+						console.log('2.저기');
+				 		html_g = template_g.replace('{grade}', grade10_msg);
+						loc10.append(html_g); 
+						
+					
+						
+					} 
+					else{
+						console.log('해당 등급위치를 찾지 못하였습니다.');
+					}
+				
+				} // for문 end
+				//location.reload();
+			//	windo.reload();
+			} // success end
+
+		});
+});
+ 
+		
+	 */
+	
+	
+	
+	//return pmData;
+	
+	
+//});
+
+
+
+ 
+
+/*
 function loadSidoData( res ){
 	$.ajax({
 		url : ctxpath + 'api/region/rt' + sido, 
@@ -342,14 +487,14 @@ function loadSidoData( res ){
 				<th>등급(pm10)</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="tbody">
  		<c:forEach items="${pmdata}" var="pm">
-		<tr>
+		<tr id="data">
 			<td>${fn:substring(pm.time, 11,16)}</td>
-			<td>${pm.pm25}</td>
-			<td></td>
-			<td>${pm.pm10}</td>
-			<td></td> 
+			<td id="pm25">${pm.pm25}</td>
+			<td id="grade_25"></td> 	 <!--	0.DB에 등급칼럼 데이터가 없음으로 => 1. 콘트롤러에서 for문으로 정의(but, for문이 길고, sido페이지에서도 쓰이므로 common-head.jsp에서 따로 정의해 incluce사용. 2. 등급부분만 따로 빼어 ajax이용함.(X) // ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ  -> 이문제로  rt-by-sido.jsp  에서는 테이블 전체(전체 데이터)를 한꺼번에 ajax로 처리함.   -->
+			<td id="pm10">${pm.pm10}</td>
+			<td id="grade_10"></td>
 		</tr>
 		</c:forEach>
 		</tbody>

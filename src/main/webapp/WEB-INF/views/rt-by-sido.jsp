@@ -5,73 +5,42 @@
 <html>
 <head>
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
+
+<style type="text/css">
+a > i {
+	color: #DDD;
+}
+
+a.favorite > i {
+	color : #F00;
+}
+</style>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
-/* function gradePm25( value ) {
-	// gradePm25(34);
-	// 없음 : 0 [0, 0]
-	// 좋음 : 1 [1, 15]
-	// 보통 : 2 [16, 50]
-	// 나쁨 : 3 [51, 100]
-	// 매우나쁨 : 4 [101 ~ )
-	
-	var pm25 = value;
-	var level;
-	var msg;
-	
-	if(pm25 ==0){
-		level = 0;
-		msg = "측정불가";
-	}
-	else if(pm25 <=15 && pm25 >= 0){
-		level = 1;
-		msg = "좋음";
-	}else if(pm25 <=50 && pm25 >=16){
-		level = 2;
-		msg = "보통";
-	}else if(pm25 <=100 && pm25 >=51){
-		level = 3;
-		msg = "나쁨";
-	} else if ( pm25 >= 101 ) {
-		level = 4;
-		msg = "매우나쁨";		
-	} else{
-		throw Error('이상한 값:' + value);
-	}
-	return { level : level , msg : msg };
+
+function addStation ( stationId, anchor ) {
+	$.ajax({
+		url : ctxpath + '/favorstation/add',
+		method : 'POST',
+		data : {
+			station: stationId
+		},
+		success : function(res){
+			console.log ( res );
+		//	 [res:success, station : { ... }, pm10 : 80, pm25:35 ]
+			if( res.success){
+				anchor.addClass('favorite');
+			}else{
+				alert('추가 실패');
+			}
+		}
+	});
 }
-function gradePm10 ( value ) {
-	// gradePm10(34);
-	// 없음 : 0 [0 , 0]
-	// 좋음 : 1 [0, 30]
-	// 보통 : 2 [31, 80]
-	// 나쁨 : 3 [81, 150]
-	// 매우나쁨 : 4 [151 ~ )
-	
-	var level;
-	var msg;
-	if(value ==0){
-		level = 0;
-		msg = "측정불가";
-	} else if(value <=30 && value >= 0){
-		level = 1;
-		msg = "좋음";
-	}else if(value <=80 && value >=31){
-		level = 2;
-		msg = "보통";
-	}else if(value <=150 && value >=81){
-		level = 3;
-		msg = "나쁨";
-	} else if ( value >= 151 ) {
-		level = 4;
-		msg = "매우나쁨";		
-	} else{
-		throw Error('이상한 값:' + value);
-	}
-	return { level : level , msg : msg };
-	
-}
- */
+ function removeStation ( stationId ) {
+	 $.ajax({
+		url : ctxpath + '/fav' 
+	 });
+ }
  function loadSidoData ( sido ) {
 	$.ajax({
     	url : ctxpath + '/api/region/rt/' + sido ,
@@ -79,7 +48,7 @@ function gradePm10 ( value ) {
     	success : function ( res ) {
     		console.log ( res );
     		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
-    		var template = '<tr><td><a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
+    		var template = '<tr><td><a id="s360" class="" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
     		var tmp = res;
     		for ( var i = 0 ; i < res.length ; i ++ ) {
     			var html = template.replace('{seq}', tmp[i].station)
@@ -91,11 +60,42 @@ function gradePm10 ( value ) {
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
     			loc.append ( html );
     		}
+    		  		
     		drawStation(res);
+    		
+    		$('#location a > i').on('click',function(e){
+    			e.preventDefault();
+    			// console.log('별클릭');
+    			var icon = $(e.target);
+    			var anchor = icon.parent();
+    			if ( anchor.hasClass('favorite') ) {
+    				var id = anchor.attr('id');
+    				removeStation( id.substring(1) );
+    			} else {
+    				var id = anchor.attr('id');
+    				addStation(id.substring(1), anchor);
+    			}
+    			
+    			
+    			
+    			
+    			
+    			/*
+    			if( anchor.hasClass('favorite') ){
+    				anchor.removeClass('favorite');
+    			}else{
+    				anchor.addClass('favorite');    				
+    			}
+    			*/
+    			// anchor.toggleClass ( 'favorite');
+    			
+    		});
+    		
     	}, 
     	error : function ( xhr, state, error ) {
 			console.log ( xhr );        		
     	}
+    	
     });
 }
 $(function() {
@@ -201,6 +201,7 @@ function addMarker  (map, infowin, marker, station ) {
 		<!--
 		[시도명] - [관측소] 
 		 -->
+		 <!-- <i class="fas fa-star"></i> -->
  		<select name="sido" id="sido">
 			<option value="">지역</option>
 			<!-- <option value="서울">서울</option>      sido = 서울,경기,강원,... / region = (서울안)중구, 은평구...같은 관측소-->

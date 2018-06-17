@@ -5,7 +5,8 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/common.css">
-<script src="http://code.jquery.com/jquery-3.3.1.js"></script>
+<link href="${pageContext.request.contextPath }/resources/css/fontawesome-all.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath }/resources/js/jquery-3.3.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script>
 

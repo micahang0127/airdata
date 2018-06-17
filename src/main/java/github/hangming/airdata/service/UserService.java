@@ -73,6 +73,13 @@ public class UserService{
 	public UserDto changePw(UserDto vo){
 		return dao.changePw(vo);
 	}
+
+
+	public void addFavoriteStation(Long userSeq, Integer stationSeq) {
+		// TODO 주어진 사용자가 관심 관측소를 추가함
+		
+		
+	}
 	
 
 }

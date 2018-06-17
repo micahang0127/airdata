@@ -6,12 +6,14 @@ import javax.servlet.http.HttpSession;
 import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 
 import github.hangming.airdata.model.UserDto;
 import github.hangming.airdata.service.UserService;
@@ -147,24 +149,30 @@ public class UserController {
 			return "{\"fail\" : false}";
 		}
 	}
-	
+
+	@RequestMapping(value= "/favorstation/add", method=RequestMethod.POST, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	String addStation(@RequestParam Integer station, HttpSession session){
+		// 1 .loginUser !!! 
+		UserDto loginUser = (UserDto)session.getAttribute("LOGIN_USER");
+		if(loginUser == null){
+			return "{\"success\" : false , \"cause\" : \"LOGIN_REQUIRED\"}";
+		}
+		// System.out.println("유저있음");
+		System.out.println("add station!! : " + station);
+		userService.addFavoriteStation ( loginUser.getSeq(), station);
+		return "{\"success\" : true}";
+	}
 	
 
 	
 	
-	// TODO /myinfo
-	/*
-	 * 
-	 * [기존 password] <<<
-	 * [새 password]<<<    [새 password]
-	 * 
-	 * server :
-	 * 1. 로그인 한 상태이어야 함 
-	 * 2. 기존password가 맞아야 함!
-	 * 3. 패스워드 업데이트
-	 * 
-	 * 
-	 */
+	
+	
+	
+	
+	
+	
 
 }
 	

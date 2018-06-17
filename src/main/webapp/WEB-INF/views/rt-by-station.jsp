@@ -259,7 +259,7 @@ $(function(){
 
 					console.log('1.여기');
 					console.log(' gradePm_msg_arr는' + gradePm_msg_arr.gradePm25_msg );	// ★★★ 데이터 하나씩 안 들어가기 때문에 object로 생성후 데이터 하나씩 뽑아 append한다 (안그럼 전체 데이터가 통채로 다들어감.)
- 	
+ 	  
 
 				if(true){ //$('tr > #grade_25'
 							//★★★	$("#grade_25").html(gradePm25_msg); // 이거 쓰면 for문 더이상 안 돌고 첫값만 빼고 html()로 코드삽입후 종료됨.

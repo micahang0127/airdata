@@ -19,6 +19,9 @@ a.favorite > i {
 var ctxpath = '${pageContext.request.contextPath}';
 
 function addStation ( stationId, anchor ) {
+	var pm10 = 80;
+	var pm25 = 40;
+	
 	$.ajax({
 		url : ctxpath + '/favorstation/add',
 		method : 'POST',
@@ -48,20 +51,32 @@ function addStation ( stationId, anchor ) {
     	success : function ( res ) {
     		console.log ( res );
     		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
-    		var template = '<tr><td><a id="s360" class="" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
-    		var tmp = res;
-    		for ( var i = 0 ; i < res.length ; i ++ ) {
-    			var html = template.replace('{seq}', tmp[i].station)
+    		var template = '<tr><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
+    		var tmp = res.data; // 39개 
+    		var favors = res.favorites; // [ 360, 362]
+    		for ( var i = 0 ; i < res.data.length ; i ++ ) {
+    			var html = template.replace('{sido}', tmp[i].station)
+    								.replace('{seq}', tmp[i].station)
     			                   .replace('{name}', tmp[i].stationName)
     			                   .replace('{pm25}', tmp[i].pm25)
     			                   .replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
     			                   .replace('{pm100}', tmp[i].pm10 )
-    			                   
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
+    			// 배열안에 특정 값(원소)가 있는지 없는지?
+    			var find =  favors.find(function( elem){
+    				return tmp[i].station == elem;
+    			});
+    			if( find ) {
+    				html = html.replace('{f}', 'favorite');
+    			} else {
+    				html = html.replace('{f}', '');
+    				alert('로그인을 해 주세요.');
+    			}
+    			
     			loc.append ( html );
     		}
     		  		
-    		drawStation(res);
+    		drawStation(res.data);
     		
     		$('#location a > i').on('click',function(e){
     			e.preventDefault();

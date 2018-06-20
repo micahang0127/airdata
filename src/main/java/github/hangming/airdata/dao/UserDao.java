@@ -24,8 +24,8 @@ public class UserDao implements IUserDao {
 //		u.setEmail(email);
 //		u.setPassword(password);
 		Map<String, String> u = new HashMap<String, String>();
-		u.put("email", email);
-		u.put("password", password);
+		u.put("e", email);
+		u.put("p", password);
 		return session.selectOne("UserMapper.getUser", u);
 	}
 	
@@ -50,8 +50,25 @@ public class UserDao implements IUserDao {
 	}
 
 
-	
+
+	@Override
+	public boolean addFavoriteStation( Long user, Integer station) {
+		// user.getSeq();
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("user", user);
+		param.put("station", station);
+		// TODO 사용자한테서 미세먼지 기준값을 입력받아야함
+		param.put("pm10_limit", 80);
+		param.put("pm25_limit", 40);
+		session.insert("addFavoriteStation", param);
+		return true;
+	}
 
 
-	
+
+	@Override
+	public List<Integer> getFavoriteStations(Long userSeq) {
+		
+		return session.selectList("UserMapper.getFavoriteStations", userSeq) ;
+	}
 }

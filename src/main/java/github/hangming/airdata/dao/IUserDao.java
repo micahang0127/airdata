@@ -10,6 +10,10 @@ public interface IUserDao {
 	UserDto getEmailCheck( String vo);
 	UserDto insertUser( UserDto vo); // OK
 	UserDto changePw( UserDto vo);
+	
+	boolean addFavoriteStation( Long user, Integer station);
+	List<Integer> getFavoriteStations( Long userSeq);
+	
 /*	UserDto getUser(UserDto vo);
 	
 	UserDto getEmailCheck(UserDto vo);

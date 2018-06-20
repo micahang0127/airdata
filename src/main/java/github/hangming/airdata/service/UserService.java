@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import github.hangming.airdata.dao.IUserDao;
 import github.hangming.airdata.dao.UserDao;
+import github.hangming.airdata.dto.Station;
 import github.hangming.airdata.model.UserDto;
 import github.hangming.airdata.util.Util;
 
@@ -42,7 +43,7 @@ public class UserService{
 	}*/
 	
 	
-	@Autowired UserDao dao;
+	@Autowired IUserDao dao;
 	@Autowired EmailService emailService ;
 
 	// 로그인용 메소드
@@ -75,8 +76,8 @@ public class UserService{
 	}
 
 
-	public void addFavoriteStation(Long userSeq, Integer stationSeq) {
-		// TODO 주어진 사용자가 관심 관측소를 추가함
+	public void addFavoriteStation(Long user, Integer station) {
+		dao.addFavoriteStation(user, station);
 		
 		
 	}

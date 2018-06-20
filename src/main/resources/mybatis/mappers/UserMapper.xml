@@ -8,7 +8,7 @@
 		<result column="pw" javaType="String"/>		
 	</resultMap> -->
 	<select id="getUser" parameterType="map" resultType="github.hangming.airdata.model.UserDto">
-	select * from user where email = #{email} and password = #{password}
+	select * from user where email = #{e} and password = #{p}
 	</select>
 	 
 
@@ -24,6 +24,22 @@
 	update user set password = #{password} where email = #{email}
 	</update>
 	
+	<insert id="addFavoriteStation" parameterType="map" >
+		insert into favor_station (
+			user, station, pm10_limit, pm25_limit 
+		) values ( 
+			#{user}, #{station}, #{pm10_limit}, #{pm25_limit} 
+		);
+	<!-- Integer userSeq = m.get("user"); -->
+	</insert>
 	
+	<select id="getFavoriteStations" parameterType="long" resultType="integer">
+	select station from favor_station where user = #{user};
+	</select>
 	
+	<!-- 
+	<select id="getFavoriteStationDetail" parameterType="long" resultType="Station">
+	select * from favor_station where user = #{user};
+	</select>
+	 -->
 </mapper>

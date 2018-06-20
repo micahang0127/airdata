@@ -77,6 +77,11 @@ function gradePm10 ( value ) {
 
 	
 var src = '${pmjson}';
+	/*src = 
+		{ "data": [{"pm10":"16","pm25":"9","time":"2018-06-13 02:00:00.0","station":360,
+					"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
+				   ]}
+	*/
 
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
@@ -84,8 +89,10 @@ google.charts.setOnLoadCallback(drawChart);
 function drawChart() {
 	var srcData = JSON.parse ( src );
 	/*
-	 srcData.data = [ { ....}, { ....}, {....} ]
+	srcData.data = [ { ....}, { ....}, {....} ]
+	
 	*/
+	
 	var pmData = [
 	    ['Time', 'PM2.5', 'PM10'],
 	 
@@ -209,205 +216,6 @@ function drawStation ( station ) {
 	marker.setMap(map);
 }
 
-
-
-$(function(){
-		
-	//	console.log("html에 나열된 pm25데이터"+$('#pm25').text());  => 이렇게 가져오면 (X). td첫줄 값에 있는 데이터만 가저옴.
-	var srcData = JSON.parse( src);
-	
-	//src = 
-	//	{ "data": [{"pm10":"16","pm25":"9","time":"2018-06-13 02:00:00.0","station":360,
-	//				"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
-	//			   ]}
-
-		
-	// $("#grade_25").html(gradePm25_msg); //=> (역시나 X). html 첫출(td)에만 들어감.ㅠ
-	// ★★★  javaScript 변수를 < % % > 로 자바코드로 넘겨 줄 수 없음!!! ( 반대로는 가능  )
-	var gradePm25_msg; 
-	var gradePm10_msg;
-	var gradePm_msg_arr = { gradePm25_msg  : gradePm25_msg };
-	
-	
-		
-		$.ajax({
-			url : ctxpath + '/station_grade',
-			method : 'GET',
-		 //	data : {
-		//		grade25_msg : grade25_msg,
-		//		grade10_msg : grade10_msg
-		//	}, 
-			success : function( data ){  // aa(여기서 맘대로 지정)는 연결 controller에 return 값을 말한다. 
-				
-				var loc25 = $('tr > #grade_25').empty();	// ★★★ $('#grade_25') 로 하면 첫줄만 나옴 ㅠ 왠지 모름 ㅠㅠ 
-		//	var loc10 = $('tr > #grade10').empty();
-				var template_g = '{grade}';
-				var html_g= "_";
-		//	var template10 = '<td>{grade id="grade10"}</td>'	;
-		//	var template = '<td id="grade_10">{gra10}</td>'
-	
-
-			for(i=0; i < srcData.data.length; i++ ){
-					
-					
-					var hh = srcData.data[i].time.substring(11, 16);
-					var pm25 = parseInt(srcData.data[i].pm25);	
-					var pm10 = parseInt(srcData.data[i].pm10);
-				
-					gradePm_msg_arr.gradePm25_msg = gradePm25(pm25).msg;
-					//gradePm10_msg = gradePm10(pm10).msg;
-
-					console.log('1.여기');
-					console.log(' gradePm_msg_arr는' + gradePm_msg_arr.gradePm25_msg );	// ★★★ 데이터 하나씩 안 들어가기 때문에 object로 생성후 데이터 하나씩 뽑아 append한다 (안그럼 전체 데이터가 통채로 다들어감.)
- 	  
-
-				if(true){ //$('tr > #grade_25'
-							//★★★	$("#grade_25").html(gradePm25_msg); // 이거 쓰면 for문 더이상 안 돌고 첫값만 빼고 html()로 코드삽입후 종료됨.
-							
-						
-							html_g = template_g.replace('{grade}',  gradePm_msg_arr.gradePm25_msg );
-							loc25.append(html_g);
-							console.log('loc25.append : '+loc25.append(html_g));
-							//$('#grade_25').val(grade25_msg);
-							
-							
-						}/* 
-						
-						
-						
-						
-					}
-					 if($('tr > #grade10')){
-						
-						//html = template10.replace('{grade}', grade10_msg);
-						//$('#grade_10').html(grade10_msg);
-						//return grade10_msg;
-						console.log('2.저기');
-				 		html_g = template_g.replace('{grade}', grade10_msg);
-						loc10.append(html_g); 
-						
-					
-						
-					} 
-					else{
-						console.log('해당 등급위치를 찾지 못하였습니다.');
-					}
-				 */
-				}// for end;
-		
-			
-			} // success end
-
-		});
-
- 
-		 
-		 
-		 
-
-	
-});
-
-
-
-/* 
- $(function(){		// ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ 
-	
-	var srcData = JSON.parse( src );
-	console.log('grade진입  src는 이것이다'+ src);
-	
-	//src = 
-	//	{ "data": [{"pm10":"16","pm25":"9","time":"2018-06-13 02:00:00.0","station":360,
-	//				"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
-	//			   ]}
-	
-	var grade25_msg;
-	var grade10_msg;
-	
-	
-	 	
-		$.ajax({
-			url : ctxpath + '/station_grade',
-			method : 'GET',
-		// 	data : {
-		//		grade25_msg : grade25_msg,
-		//		grade10_msg : grade10_msg
-		//	}, 
-			success : function( aa ){  // aa(여기서 맘대로 지정)는 연결 controller에 return 값을 말한다. 
-				 
-				console.log('등급 ajax 진입');
-				var loc25 = $('#grade_25').empty();
-				var loc10 = $('tr > #grade10').empty();
-				var template_g = '{grade}';
-			//	var template10 = '<td>{grade id="grade10"}</td>'	;
-			//	var template = '<td id="grade_10">{gra10}</td>'
-				var html_g= "_";
-			 
-			
-				for(i=0; i< srcData.data.length; i++){
-					
-					var hh = srcData.data[i].time.substring(11, 16);
-					var pm10 = parseInt(srcData.data[i].pm10);
-					var pm25 = parseInt(srcData.data[i].pm25);
-					
-					
-					grade25_msg = gradePm25(pm25).msg;
-					grade10_msg= gradePm10(pm10).msg;
-					
-					
-						
-					if($('tr > #grade_25')){
-						
-	//					$('#grade_25').html(grade25_msg);
-						//return grade25_msg;
-
-						html_g = template_g.replace('{grade}', grade25_msg );
-						loc25.append(html_g);
-						console.log('1.여기');
-						console.log(' grade25_mag는' + grade25_msg);
-						//console.log('loc25.append : '+loc25.append(html_g));
-						//$('#grade_25').val(grade25_msg);
-						
-						
-					}
-					 if($('tr > #grade10')){
-						
-						//html = template10.replace('{grade}', grade10_msg);
-						//$('#grade_10').html(grade10_msg);
-						//return grade10_msg;
-						console.log('2.저기');
-				 		html_g = template_g.replace('{grade}', grade10_msg);
-						loc10.append(html_g); 
-						
-					
-						
-					} 
-					else{
-						console.log('해당 등급위치를 찾지 못하였습니다.');
-					}
-				
-				} // for문 end
-				//location.reload();
-			//	windo.reload();
-			} // success end
-
-		});
-});
- 
-		
-	 */
-	
-	
-	
-	//return pmData;
-	
-	
-//});
-
-
-
- 
-
 /*
 function loadSidoData( res ){
 	$.ajax({
@@ -436,6 +244,16 @@ function loadSidoData( res ){
 	
 }
  */
+/* ★★★   [등급구현  ]
+	ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ 
+	console.log("html에 나열된 pm25데이터"+$('#pm25').text());  => 이렇게 가져오면 (X). td첫줄 값에 있는 데이터만 가저옴	
+	$("#grade_25").html(gradePm25_msg); //=> (역시나 X). html 첫출(td)에만 들어감.ㅠ
+	 ★★★  javaScript 변수를 < % % > 로 자바코드로 넘겨 줄 수 없음!!! ( 반대로는 가능  )
+	 ★★★ $('#grade_25') 로 하면 첫줄만 나옴 ㅠ 왠지 모름 ㅠㅠ 
+*/
+
+
+
 </script>
 
 <title>[시도명]관측소</title>

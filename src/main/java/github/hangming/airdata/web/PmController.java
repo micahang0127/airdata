@@ -1,7 +1,10 @@
 package github.hangming.airdata.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,8 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import github.hangming.airdata.dao.IUserDao;
 import github.hangming.airdata.dto.Pmdata;
 import github.hangming.airdata.dto.Station;
+import github.hangming.airdata.model.UserDto;
 import github.hangming.airdata.service.PmService;
 import github.hangming.airdata.service.StationService;
 
@@ -25,6 +30,7 @@ import github.hangming.airdata.service.StationService;
 public class PmController {
 
 	@Autowired PmService pmService;
+	@Autowired IUserDao userDao;
 	
 	@Autowired StationService stationService;
 	
@@ -68,8 +74,13 @@ public class PmController {
 		model.addAttribute("data", data);
 		model.addAttribute("sido", Arrays.asList(this.sido));
 		model.addAttribute("sidoName", sido);
+		
+		System.out.println("data 확인 : "+data);
+		
 		return "rt-by-sido";
 	}
+	
+	
 	/**
 	 * 특정 시도의 
 	 * @return
@@ -77,12 +88,25 @@ public class PmController {
 	 */
 	@RequestMapping(value="/api/region/rt/{sido}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
 	@ResponseBody // 지금 리턴하는 문자열을 가지고 jsp를 찾지 마세요. 이거 자체가 응답의 본문입니다.
-	public String dataByStation (@PathVariable String sido ) throws JsonProcessingException {
+	public String dataByStation (@PathVariable String sido, HttpSession session ) throws JsonProcessingException {
 		List<Pmdata> data = pmService.findRealtimeDataByRegion(sido);
+	
+		Map<String, Object> res = new HashMap<String, Object>();
+		
+		UserDto loginUser = (UserDto)session.getAttribute("LOGIN_USER"); 
+		if( loginUser != null){
+			List<Integer> stations = userDao.getFavoriteStations(loginUser.getSeq());
+			
+			res.put("favorites", stations);
+		}
+		else{
+			res.put("favorites", new ArrayList<Integer>());
+		}
+		res.put("data", data);
 		
 		ObjectMapper om = new ObjectMapper();
-		String json = om.writeValueAsString(data);
-		
+		String json = om.writeValueAsString(res);
+		System.out.println(sido + "=> " + json);
 		return json;
 	}
 	
@@ -103,7 +127,9 @@ public class PmController {
 		return json;
 	}
 	
-	
+
+
+/*	
 	@RequestMapping(value="/station_grade", method=RequestMethod.GET)
 	@ResponseBody
 	public String grade(){
@@ -112,7 +138,7 @@ public class PmController {
 		
 	}
 	 
-	
+	*/
 	
 	
 	

@@ -82,5 +82,11 @@ public class UserService{
 		
 	}
 	
+	public void delectFavoriteStation(Long user, Integer station){
+		
+		System.out.println("remove ServicºÎºÐ"+ user+ ", " +station);
+		dao.delectFavoriteStation(user, station);
+	}
+	
 
 }

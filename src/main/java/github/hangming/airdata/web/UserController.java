@@ -166,7 +166,23 @@ public class UserController {
 		return "{\"success\" : true}";
 	}
 	
-
+	
+	@RequestMapping(value="/favorstation/remove", method=RequestMethod.POST,  produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	String removeStation(@RequestParam Integer station, HttpSession session){
+		UserDto loginUser = (UserDto)session.getAttribute("LOGIN_USER");
+		if(loginUser == null){
+			System.out.println("로그인부터 하거라");
+			return "{\"success\" : false, \"cause\" : \"LOGIN_REQUIRED\"}";
+		}
+		
+		System.out.println("remove station"+ station);
+		userService.delectFavoriteStation( loginUser.getSeq() , station);
+		
+		return "{\"success\" : true}";
+		
+		
+	}
 	
 	
 	

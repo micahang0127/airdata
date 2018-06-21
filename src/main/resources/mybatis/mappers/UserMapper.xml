@@ -42,4 +42,9 @@
 	select * from favor_station where user = #{user};
 	</select>
 	 -->
+	
+	 
+	<delete id="delectFavoriteStation" parameterType="map">
+	 delete from airstation.favor_station where user= #{user} and station= #{station};
+	 </delete> 
 </mapper>

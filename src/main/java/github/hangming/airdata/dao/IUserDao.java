@@ -13,6 +13,8 @@ public interface IUserDao {
 	
 	boolean addFavoriteStation( Long user, Integer station);
 	List<Integer> getFavoriteStations( Long userSeq);
+	boolean delectFavoriteStation( Long user, Integer station );
+	
 	
 /*	UserDto getUser(UserDto vo);
 	

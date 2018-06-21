@@ -7,7 +7,7 @@
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 
 <style type="text/css">
-a > i {
+a > i , a.no_f {
 	color: #DDD;
 }
 
@@ -32,16 +32,36 @@ function addStation ( stationId, anchor ) {
 			console.log ( res );
 		//	 [res:success, station : { ... }, pm10 : 80, pm25:35 ]
 			if( res.success){
+				console.log('anchor확인'+ anchor);
+				anchor.removeClass('no_f');
 				anchor.addClass('favorite');
 			}else{
-				alert('추가 실패');
+				alert('추가에 실해 하였습니다 . \n 로그인 여부를 확인해 주세요.');
 			}
 		}
 	});
 }
- function removeStation ( stationId ) {
+ function removeStation ( stationId, anchor ) {
+	 
+	 console.log('removeStation진입 '+ stationId);
+	 
 	 $.ajax({
-		url : ctxpath + '/fav' 
+		url : ctxpath + '/favorstation/remove',
+		method : 'POST',
+		data : {
+			station: stationId
+		},
+		success : function(res){
+			console.log(res);
+			if(res.success){
+				console.log('관심등록 해제 성공 진입');
+				console.log('anchor확인'+ anchor);
+				anchor.removeClass('favorite').addClass('no_f');
+			}else{
+				alert('관심등록 해제에 실패했습니다.\n 로그인 여부를 확인해 주세요.');
+				
+			}		
+		}
 	 });
  }
  function loadSidoData ( sido ) {
@@ -62,15 +82,15 @@ function addStation ( stationId, anchor ) {
     			                   .replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
     			                   .replace('{pm100}', tmp[i].pm10 )
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
-    			// 배열안에 특정 값(원소)가 있는지 없는지?
-    			var find =  favors.find(function( elem){
+    			// 배열안에 특정 값(원소)가 있는지 없는지? (배열favors를  돌면서 특정 값을 찾아낸다. 즉 , 배열 for문 돌기의 script식 )
+    			var find =  favors.find(function( elem){  
     				return tmp[i].station == elem;
     			});
-    			if( find ) {
+    			if( find ) {   /*  find가 true이면 favorite이라 넣어줌 (즉, 관측소중 관심으로 등록된건 class= "favorite" ) */
     				html = html.replace('{f}', 'favorite');
     			} else {
-    				html = html.replace('{f}', '');
-    				alert('로그인을 해 주세요.');
+    				html = html.replace('{f}', 'no_f');   /* 관심등록 아직 안된건 class=" " 로 됨.  */
+    				
     			}
     			
     			loc.append ( html );
@@ -78,17 +98,26 @@ function addStation ( stationId, anchor ) {
     		  		
     		drawStation(res.data);
     		
-    		$('#location a > i').on('click',function(e){
-    			e.preventDefault();
+    		$('#location a > i').on('click',function(e){ // ★★★★ 클릭되면 오는 것이 아니라, 페이지가 로딩 될 때 부터 와서 준비 함!! => 클릭이 되었을 때, 여기로 오는게 아닌, 바로 아래  var icon = $(e.target) 부터 실행 된다. !!!
+    			e.preventDefault(); 					// a태그로 새로운 url로 페이징 로딩이 안되게 해줌. 
     			// console.log('별클릭');
-    			var icon = $(e.target);
-    			var anchor = icon.parent();
-    			if ( anchor.hasClass('favorite') ) {
-    				var id = anchor.attr('id');
-    				removeStation( id.substring(1) );
-    			} else {
+    			var icon = $(e.target); 				//(지금)클릭 된 애가 누군지(이벤트를 발생시킨 녀석) 
+    			var anchor = icon.parent(); 			// icon에 있는 부모태그를 찾아간다. => 여기선 a태그
+    			if ( anchor.hasClass('favorite') ) {  	// a태그의 class명이 = "fovorite"( 관심등록 된 상태) 이면,  
+    				
+   					/*	$('#location a > i').on('click', function(e) { ... } 
+   						★★★ (X) => 관심등록 된것 한번더 클릭하면 해제되는 함수로 이동하는게 아님!!!
+   						위에서도 설명 했듯, 이 코드는 클릭하면 오는게 아니라 처음부터 페이지가 로딩 될때 부터 준비되고 , 클릭이 되면 이 부분 바로 밑부분으로 들어가 실행된다.!!!
+					*/
+				
+   					var id = anchor.attr('id'); 
+   					removeStation( id.substring(1), anchor ); // substring(1) => 문자열(id) 처음부터 끝까지를 가져온다. 
+   	
+    			
+    			}else {
     				var id = anchor.attr('id');
     				addStation(id.substring(1), anchor);
+    				
     			}
     			
     			

@@ -110,11 +110,36 @@ public class PmController {
 		return json;
 	}
 	
+	
+	
+	@RequestMapping(value="/api/station/rt/{stationId}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String dataByLocation (@PathVariable Integer stationId) throws JsonProcessingException {
+		
+		List<Pmdata> data = pmService.findByStation( stationId );  // 최근 24시간 동안의 pmdata테이블의 station(시도seq값)이 같은 것의 전체를 select( pm10, pm25, time, station )
+		System.out.println("콘트롤러 여기 stationId"+stationId);
+		//model.addAttribute("pmdata", data);
+		
+
+		ObjectMapper om = new ObjectMapper();
+		String json = om.writeValueAsString(data);
+		json = "{ \"data\": @v }".replace("@v", json);
+
+		System.out.println("콘트롤러 여기 json"+data);
+		
+		return json;
+		
+	}
+	
+	
+	
 	@RequestMapping(value="/api/station/{sseq}", method=RequestMethod.GET, produces="application/json;charset=UTF-8")
-	@ResponseBody // 지금 리턴하는 문자열을 가지고 jsp를 찾지 마세요. 이거 자체가 응답의 본문입니다.
+	@ResponseBody // 지금 리턴하는 문자열을 가지고 jsp를 찾지 마세요. 이거 자체가 응답의 본문입니다.  // ★★★★ producces =.... 꼭 써줘야 json형태로 return 한다. 안그럼 ajax에서 success로 안들어감 (오류)!!!!!!!! 
 	public String dataByStation (@PathVariable Integer sseq ) throws JsonProcessingException {
 		Station station = pmService.findStationBySeq ( sseq );
 		/*
+		 *차트를 구현 부분(rt-by-station.jsp).
+		 * 
 		StringBuilder sb = new StringBuilder();
 		sb.append('{');
 		sb.append ("lat : " + station.getLat());
@@ -127,20 +152,11 @@ public class PmController {
 		return json;
 	}
 	
-
-
-/*	
-	@RequestMapping(value="/station_grade", method=RequestMethod.GET)
-	@ResponseBody
-	public String grade(){
-		//session.
-		return "{\"grade_msg\" :\"grade_msg\"}";
-		
-	}
-	 
-	*/
 	
 	
+	
+	
+
 	
 }
 

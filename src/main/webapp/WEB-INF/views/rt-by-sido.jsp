@@ -70,6 +70,7 @@ function addStation ( stationId, anchor ) {
     	method : 'GET',
     	success : function ( res ) {
     		console.log ( res );
+    		console.log(res.data);
     		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
     		var template = '<tr><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
     		var tmp = res.data; // 39개 

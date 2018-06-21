@@ -9,71 +9,6 @@
 <script type="text/javascript">
 /* ★★★   html페이지가 먼저 로드 된 후 !!!! script 실행된다  ( 데이터 삽입할 때 참고. )*/
 
-function gradePm25( value ) {
-	// gradePm25(34);
-	// 없음 : 0 [0, 0]
-	// 좋음 : 1 [1, 15]
-	// 보통 : 2 [16, 50]
-	// 나쁨 : 3 [51, 100]
-	// 매우나쁨 : 4 [101 ~ )
-	
-	var pm25 = value;
-	var level;
-	var msg;
-	
-	if(pm25 ==0){
-		level = 0;
-		msg = "측정불가";
-	}
-	else if(pm25 <=15 && pm25 >= 0){
-		level = 1;
-		msg = "좋음";
-	}else if(pm25 <=50 && pm25 >=16){
-		level = 2;
-		msg = "보통";
-	}else if(pm25 <=100 && pm25 >=51){
-		level = 3;
-		msg = "나쁨";
-	} else if ( pm25 >= 101 ) {
-		level = 4;
-		msg = "매우나쁨";		
-	} else{
-		throw Error('이상한 값:' + value);
-	}
-	return { level : level , msg : msg };
-}
-function gradePm10 ( value ) {
-	// gradePm10(34);
-	// 없음 : 0 [0 , 0]
-	// 좋음 : 1 [0, 30]
-	// 보통 : 2 [31, 80]
-	// 나쁨 : 3 [81, 150]
-	// 매우나쁨 : 4 [151 ~ )
-	
-	var level;
-	var msg;
-	if(value ==0){
-		level = 0;
-		msg = "측정불가";
-	} else if(value <=30 && value >= 0){
-		level = 1;
-		msg = "좋음";
-	}else if(value <=80 && value >=31){
-		level = 2;
-		msg = "보통";
-	}else if(value <=150 && value >=81){
-		level = 3;
-		msg = "나쁨";
-	} else if ( value >= 151 ) {
-		level = 4;
-		msg = "매우나쁨";		
-	} else{
-		throw Error('이상한 값:' + value);
-	}
-	return { level : level , msg : msg };
-	
-}
-
 
 	
 var src = '${pmjson}';
@@ -159,6 +94,8 @@ $(function() {
         			loc.append ( html );
         		}
         		
+        		
+        		
         	}, 
         	error : function ( xhr, state, error ) {
 				console.log ( xhr );        		
@@ -167,6 +104,8 @@ $(function() {
         
     }); // end region
     
+   
+
     
     $("#location").change(function(){
     	var stationId = $(this).val() ;
@@ -174,10 +113,13 @@ $(function() {
     	/*
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 
-    	 
-    	
+    	 loadSidoData( stationId );
+
     	location.href = url;
     });
+    
+    loadSidoData( '${station.seq}' );
+
     
     $('.nav-tabs a[href="#station-map"]').on('shown.bs.tab', function() {
     	
@@ -190,6 +132,8 @@ $(function() {
     		success : function( res ){
     			console.log ( res );
 				drawStation( res );
+				
+
 				
     		}
     	
@@ -216,18 +160,19 @@ function drawStation ( station ) {
 	marker.setMap(map);
 }
 
-/*
-function loadSidoData( res ){
+
+function loadSidoData( stationId ){
 	$.ajax({
-		url : ctxpath + 'api/region/rt' + sido, 
+		url : ctxpath + '/api/station/rt/' + stationId, 
 		method : 'GET',
 		success : function ( res ){
-			console.log(res);
-			var loc = $('#location_val > tbody').empty();   $('')에   html소스부분 씀 
+			console.log('res.data'+ res.data)
+			var loc = $('#location_val > tbody').empty();   /*   $('')에   html소스부분 씀     */
 			var template = '<tr><td>{time}</td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm10}</td><td>{grade_pm10}</td></tr>';
-			var tmp = res; 
-			for ( var i = 0; i < res.length ; i++){
-				var html = template.replace('{time}', tmp[i].time)
+			var tmp = res.data; 
+			for ( var i = 0; i < res.data.length ; i++){
+				
+				var html = template.replace('{time}', tmp[i].time.substring(0,16))
 								 	.replace('{pm25}', tmp[i].pm25)
 								 	.replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
 								 	.replace('{pm10}', tmp[i].pm10)
@@ -236,14 +181,14 @@ function loadSidoData( res ){
 			}
 		},
 		error : function ( xhr, state, error ){
-			console.log( xhr );		
+			console.log( xhr+','+state+'.'+error );		
 			
 		}
 	});
 	
 	
 }
- */
+ 
 /* ★★★   [등급구현  ]
 	ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ 
 	console.log("html에 나열된 pm25데이터"+$('#pm25').text());  => 이렇게 가져오면 (X). td첫줄 값에 있는 데이터만 가저옴	
@@ -305,17 +250,19 @@ function loadSidoData( res ){
 				<th>등급(pm10)</th>
 			</tr>
 		</thead>
-		<tbody id="tbody">
- 		<c:forEach items="${pmdata}" var="pm">
-		<tr id="data">
+		<tbody>
+		<%--  		
+			<c:forEach items="${pmdata}" var="pm">
+		<tr>
 			<td>${fn:substring(pm.time, 11,16)}</td>
-			<td id="pm25">${pm.pm25}</td>
+			<td >${pm.pm25}</td>
 			<td id="grade_25"></td> 	 <!--	0.DB에 등급칼럼 데이터가 없음으로 => 1. 콘트롤러에서 for문으로 정의(but, for문이 길고, sido페이지에서도 쓰이므로 common-head.jsp에서 따로 정의해 incluce사용. 2. 등급부분만 따로 빼어 ajax이용함.(X) // ajax로 등급만 재 로드 하면 안됨. html테이블과 pm25,pm10 데이터가 다 로드가 된 후 ajax로 등급만 하니 등급의 한 값씩 td에 넣지 못하고 한꺼번에(좋음,보통,좋음...전체가) 하나의 td 칸에 들어감 ㅠㅠ  -> 이문제로  rt-by-sido.jsp  에서는 테이블 전체(전체 데이터)를 한꺼번에 ajax로 처리함.   -->
-			<td id="pm10">${pm.pm10}</td>
+			<td >${pm.pm10}</td>
 			<td id="grade_10"></td>
 		</tr>
-		</c:forEach>
-		</tbody>
+			</c:forEach>
+		 --%>	
+ 		</tbody>
 		</table>
 		</div>
 	</div>

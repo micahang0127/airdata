@@ -2,9 +2,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style type="text/css">
 
- @media (min-width: 768px){    /*  최대 768px, 768px가 안되는 경우, 768px보다 작은 경우   */
+ @media (min-width: 768px){    /*  최소 768px, 768px보다 큰 경우*/
 	button > .icon-bar{
 	background-color : #EAEAEA!important;
+	}
+ } 
+  @media (max-width: 768px){    /*  최대 768px, 768px가 안되는 경우, 768px보다 작은 경우   */
+	button > .icon-bar{
+	background-color : #000000!important;
 	}
  } 
 /* .button-menu .icon-bar {

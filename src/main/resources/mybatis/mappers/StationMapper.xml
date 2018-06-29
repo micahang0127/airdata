@@ -13,6 +13,7 @@
 	<resultMap type="Pmdata" id="pmMap">
 		<result column="location" property="stationName" />
 		<result column="station"  property="station" />
+		<result column="region"  property="region" />
 		<result column="time" property="time"/>
 		<result column="pm10" property="pm10"/>
 		<result column="pm25" property="pm25"/>
@@ -20,6 +21,7 @@
 		<result column="lng" property="lng"/>
 		
 	</resultMap>
+	
 	
 	<select id="findAll" resultMap="stationMap">
 		select * from stations;
@@ -62,5 +64,17 @@
 	where s.region=#{id};
 	
 	</select>
+	
+	
+	<select id="findMainRealtimeAvg" resultMap="pmMap">
+	select 
+		pm1.*,
+		s.region, round(avg(pm10),0) avgPm10, round(avg(pm25),0) avgPm25, count(pm10) countPm10, count(pm25) countPm25
+	from ( select station, max(time) AS  latest from pmdata pm group by station ) pm0
+	join pmdata pm1 on pm0.latest = pm1.time and pm0.station = pm1.station 
+	join stations s on pm1.station = s.seq group by region;
+	
+	</select>
+	
 	
 </mapper>

@@ -1,5 +1,6 @@
 package github.hangming.airdata.dto;
 
+
 public class Pmdata {
 	
 	String pm10; // "-"
@@ -8,12 +9,19 @@ public class Pmdata {
 	
 	int station;
 	String stationName;
+	String region;
 	
 	double lat;
 	double lng;
 	
+	int avgPm10;
+	int avgPm25;
+	int countPm10;
+	int countPm25;
 	
 	
+
+
 	public double getLat() {
 		return lat;
 	}
@@ -23,6 +31,7 @@ public class Pmdata {
 	public double getLng() {
 		return lng;
 	}
+
 	public void setLng(double lng) {
 		this.lng = lng;
 	}
@@ -32,6 +41,7 @@ public class Pmdata {
 	public boolean hasValidPm10 () {
 		return pm10.indexOf('-') < 0 ; 
 	}
+	
 	public double getPm10Value() {
 		try {
 			double val = Double.parseDouble(pm10);
@@ -40,6 +50,7 @@ public class Pmdata {
 			return 0;
 		}
 	}
+	
 	public double getPm25Value() {
 		try {
 			double val = Double.parseDouble(pm25);
@@ -76,10 +87,48 @@ public class Pmdata {
 	public void setStationName(String stationName) {
 		this.stationName = stationName;
 	}
+	
+	
+	public String getRegion() {
+		return region;
+	}
+	public void setRegion(String region) {
+		this.region = region;
+	}
+	
+	
+	public int getAvgPm10() {
+		return avgPm10;
+	}
+	public void setAvgPm10(int avgPm10) {
+		this.avgPm10 = avgPm10;
+	}
+	public int getAvgPm25() {
+		return avgPm25;
+	}
+	public void setAvgPm25(int avgPm25) {
+		this.avgPm25 = avgPm25;
+	}
+	public int getCountPm10() {
+		return countPm10;
+	}
+	public void setCountPm10(int countPm10) {
+		this.countPm10 = countPm10;
+	}
+	public int getCountPm25() {
+		return countPm25;
+	}
+	public void setCountPm25(int countPm25) {
+		this.countPm25 = countPm25;
+	}
+	
+	
+	
 	@Override
 	public String toString() {
-		return "Pmdata [pm10=" + pm10 + ", pm25=" + pm25 + ", time=" + time + "]" + stationName ;
-	}
+		return "Pmdata [pm10=" + pm10 + ", pm25=" + pm25 + ", time=" + time + "stationName"+ stationName +"region"+ region +"]"  ;
 
-	
+	}
 }
+
+

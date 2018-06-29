@@ -14,9 +14,9 @@ function gradePm25( value ) {
 	// gradePm25(34);
 	// 없음 : 0 [0, 0]
 	// 좋음 : 1 [1, 15]
-	// 보통 : 2 [16, 50]
-	// 나쁨 : 3 [51, 100]
-	// 매우나쁨 : 4 [101 ~ )
+	// 보통 : 2 [16, 35]
+	// 나쁨 : 3 [36, 75]
+	// 매우나쁨 : 4 [76 ~ ])
 	
 	var pm25 = value;
 	var level;
@@ -29,13 +29,13 @@ function gradePm25( value ) {
 	else if(pm25 <=15 && pm25 >= 0){
 		level = 1;
 		msg = "좋음";
-	}else if(pm25 <=50 && pm25 >=16){
+	}else if(pm25 <=35 && pm25 >=16){
 		level = 2;
 		msg = "보통";
-	}else if(pm25 <=100 && pm25 >=51){
+	}else if(pm25 <=75 && pm25 >=36){
 		level = 3;
 		msg = "나쁨";
-	} else if ( pm25 >= 101 ) {
+	} else if ( pm25 >= 76) {
 		level = 4;
 		msg = "매우나쁨";		
 	} else{

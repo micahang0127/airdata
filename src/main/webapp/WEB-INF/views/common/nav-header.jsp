@@ -27,7 +27,7 @@
 			        <span id="icon-bar" class="icon-bar"></span>
 			        <span id="icon-bar" class="icon-bar"></span>                        
 			      </button>
-				<div class="navbar-brand-elem"><a href="<c:url value="/"/>">맑은 하늘</a></div>
+				<div class="navbar-brand-elem"><a href="<c:url value="/index"/>">맑은 하늘</a></div>
 			</div>
 		</div>
 		<c:if test="${not empty LOGIN_USER }">
@@ -39,7 +39,7 @@
 		</c:if>
 		<div class="navbar-collapse collapse" id="menu-body">
 			<ul class="nav navbar-nav navbar-right">
-				<li class=""><a href="<c:url value="/"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
+				<li class=""><a href="<c:url value="/index"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
 				<li class=""><a href="<c:url value="/region/rt/서울"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">구동관측소</span></a></li>				
 				<li class=""><a href="<c:url value="/rt/360"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">시도</span></a></li>
 				<c:if test="${empty LOGIN_USER }">

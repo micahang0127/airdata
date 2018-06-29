@@ -124,4 +124,11 @@ public class PmService {
 		return pmDao.findRealtimeDataByRegion(sido);
 	}
 	
+	
+	public List<Pmdata> findMainRealtimeAvg(){
+		return pmDao.findMainRealtimeAvg();
+	}
+	
+	
+	
 }

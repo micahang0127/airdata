@@ -22,4 +22,7 @@ public interface IPmDao {
 	Station findStationBySeq(Integer stationSeq);  // 해당 한 지역의 여태까지의 (시간대별로)미세먼지수치를 보여줌
 
 	List<Pmdata> findRealtimeDataByRegion(String sido);//각 시도별 가장최근데이터 보여줌
+	
+	List<Pmdata> findMainRealtimeAvg(); // 각 시도별(서울,경기..) 가장 최근 데이터 중 pm10,pm25의 각시도별 평균값을 보여줌 
+
 }

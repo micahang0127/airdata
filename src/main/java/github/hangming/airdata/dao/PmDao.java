@@ -65,6 +65,11 @@ public class PmDao implements IPmDao {
 	public List<Pmdata> findRealtimeDataByRegion(String sido) {
 		return session.selectList("StationMapper.findRealtimeDataByRegion", sido);
 	}
+
+	@Override
+	public List<Pmdata> findMainRealtimeAvg() {
+		return session.selectList("StationMapper.findMainRealtimeAvg");
+	}
 	
 
 }

@@ -43,7 +43,7 @@
  		
  		var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 		var email = document.getElementById("email").value; //= $('#email').val();
- 		alert( email+"여긴email_form");
+ 		//alert( email);
  			
 		if(exptext.test(email) == false){ 
  			  //이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐경우 
@@ -120,7 +120,7 @@
 					
 					if( res.success ){
 						alert('회원가입이 완료되었습니다');
-						location.href = ctxpath;
+						location.href = ctxpath+"/index";
 					}
 					else {
 						alert('회원가입을 실패하였습니다. 잠시 후 다시 시도해주세요.');

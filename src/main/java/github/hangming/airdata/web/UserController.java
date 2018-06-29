@@ -115,7 +115,7 @@ public class UserController {
 	String logout(HttpSession session){
 		// session.removeAttribute("LOGIN_USER");
 		session.invalidate();
-		return "redirect:/";
+		return "redirect:/index";
 	}
 	
 	

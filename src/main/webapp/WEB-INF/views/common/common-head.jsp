@@ -10,6 +10,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script>
 
+
+
+
 function gradePm25( value ) {
 	// gradePm25(34);
 	// 없음 : 0 [0, 0]
@@ -29,15 +32,19 @@ function gradePm25( value ) {
 	else if(pm25 <=15 && pm25 >= 0){
 		level = 1;
 		msg = "좋음";
+		//msg.css('color','blue');
 	}else if(pm25 <=35 && pm25 >=16){
 		level = 2;
 		msg = "보통";
+		//msg.css('color','green');
 	}else if(pm25 <=75 && pm25 >=36){
 		level = 3;
 		msg = "나쁨";
+		//msg.css('color','yellow');
 	} else if ( pm25 >= 76) {
 		level = 4;
-		msg = "매우나쁨";		
+		msg = "매우나쁨";
+		//msg.css('color','red');
 	} else{
 		throw Error('이상한 값:' + value);
 	}

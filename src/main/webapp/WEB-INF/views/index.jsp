@@ -5,13 +5,6 @@
 <html>
 <head>
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
-<style type="text/css">
-.glyphicon glyphicon-minus {
-	width: 600px;
-	background-color: green;
-	color: red;
-}
-</style>
 <script type="text/javascript">
 	var ctxpath = '${pageContext.request.contextPath}';
 
@@ -48,35 +41,35 @@
 
 	$(function() {
 
-		$
-				.ajax({
+		
+		$.ajax({
 
-					url : ctxpath + '/index',
-					method : 'GET',
-					success : function(aa) { // aa(맘대로 지정)에는 해당 controller에서 return값이 들어있다.
-						var loc = $('.all').empty();
-						var templet = '<div class="thumbnail" style="width:150px;height:150px; float:left; margin:20px; text-align: center; "><h4><a href="/airdata/region/rt/[sido]" id="sido">{sido}</a></h4><p id="grade">{grade}</p><p id="pm10"><b>{pm10}</b>[10]</p><p id="pm25"><b>{pm25}</b>[2.5]</p></div>';
-						var tem = aa;
-						for (i = 0; i < sido.length; i++) {
+			url : ctxpath + '/index',
+			method : 'GET',
+			success : function(aa) { // aa(맘대로 지정)에는 해당 controller에서 return값이 들어있다.
+				var loc = $('.all').empty();
+				var templet = '<div class="thumbnail" style="width:150px;height:150px; float:left; margin:20px; text-align: center; "><h4><a href="/airdata/region/rt/[sido]" id="sido">{sido}</a></h4><p id="grade">{grade}</p><p id="pm10"><b>{pm10}</b>[10]</p><p id="pm25"><b>{pm25}</b>[2.5]</p></div>';
+				var tem = aa;
+				for (i = 0; i < sido.length; i++) {
 
-							for (j = 0; j < srcData.length; j++) {
+					for (j = 0; j < srcData.length; j++) {
 
-								if (sido[i] == srcData[j].region) {
-	
-									var html = templet.replace('[sido]',sido[i])
-														.replace('{sido}',sido[i])
-														.replace('{grade}',gradePm10(srcData[j].avgPm10).msg)
-														.replace('{pm10}',srcData[j].avgPm10)
-														.replace('{pm25}',srcData[j].avgPm25);
+						if (sido[i] == srcData[j].region) {
 
-									loc.append(html);
+							var html = templet.replace('[sido]',sido[i])
+												.replace('{sido}',sido[i])
+												.replace('{grade}',gradePm10(srcData[j].avgPm10).msg)
+												.replace('{pm10}',srcData[j].avgPm10)
+												.replace('{pm25}',srcData[j].avgPm25);
 
-								}
-							}
+							loc.append(html);
 
 						}
 					}
-				});
+
+				}
+			}
+		});
 
 	});
 </script>
@@ -107,7 +100,7 @@
 							<span class="sr-only">151-(매우나쁨)</span>
 						</div>
 					</div>
-					<table style="width:400px; margin-bottom: 20px;"><tr><td style="width:25%; color:blue;">0</td><td style="width:25%; color:green;">31</td><td style="width:25%; color:#C9AE00;">81</td><td style="width:25%; color:#FF0000;">151~</td></tr></table>
+					<table style="width:400px; margin-bottom: 20px;"><tr><td style="width:25%; color:blue;">0(좋음)</td><td style="width:25%; color:green;">31(보통)</td><td style="width:25%; color:#C9AE00;">81(나쁨)</td><td style="width:25%; color:#FF0000;">151~(매우나쁨)</td></tr></table>
 					</li>
 					<li><h5>PM2.5(초미세먼지)</h5>
 					<div class="progress" style="width: 400px; height: 5px; margin-bottom: 0px;">

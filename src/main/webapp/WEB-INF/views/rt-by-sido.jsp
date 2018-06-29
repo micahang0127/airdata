@@ -144,26 +144,23 @@ function addStation ( stationId, anchor ) {
     });
 }
 $(function() {
-	$('#sido').val('${station.region}');
-    // $("#location").val("${station.seq}");
+	$('#sido').val('${sidoName}');  /* ★★★★★  이것을 해야 페이지가 로드 될때 바로 select option에 
+													기본 서울로 나옴. url에 /서울.. 이런식으로 주었음으로 !!! */
 
     // $("select[name=sido]").change(function() {
     $("#sido").change(function() {
-        var temp1 = $("select[name=location]");
         var sido_val = $(this).val();
-        loadSidoData(sido_val);
-    }); // end region
-    
-    
-    $("#location").change(function(){
-    	var stationId = $(this).val() ;
-    	var url = '/airdata/rt/' + stationId ;
-    	/*
+        var url = ctxpath + '/region/rt/'+ sido_val; 
+       
+       // loadSidoData(sido_val);
+        
+        /*
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 
-    	location.href = url;
-    });
+       location.href = url;  /* ★★★★★ 여기서 새로고침 해줌으로(페이지이동) url주소가 선택한 sido에 맞게 바뀐다. */
+    }); // end region
     
+   
     loadSidoData ( '${sidoName}' );
 });
     

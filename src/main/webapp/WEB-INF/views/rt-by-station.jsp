@@ -113,7 +113,7 @@ $(function() {
     	/*
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 
-    	 loadSidoData( stationId );
+    	 //loadSidoData( stationId );
 
     	location.href = url;
     });

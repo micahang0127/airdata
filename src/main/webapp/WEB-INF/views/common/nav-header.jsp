@@ -39,9 +39,7 @@
 		</c:if>
 		<div class="navbar-collapse collapse" id="menu-body">
 			<ul class="nav navbar-nav navbar-right">
-				<li class=""><a href="<c:url value="/index"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
-				<li class=""><a href="<c:url value="/region/rt/서울"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">구동관측소</span></a></li>				
-				<li class=""><a href="<c:url value="/rt/360"/>"><span class="glyphicon" style="width:16px;height:16px;display:inline-block;" aria-hidden="true"></span><span class="link-text">시도</span></a></li>
+				<li class=""><a href="<c:url value="/index"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
 				<c:if test="${empty LOGIN_USER }">
 				<li><a href="<c:url value="/register"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">가입하기</span></a></li>
 				<li><a href="<c:url value="/login"/>"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span><span class="link-text">로그인</span></a></li>
@@ -49,7 +47,8 @@
 				<c:if test="${not empty LOGIN_USER }">
 				<li><a href="<c:url value="/logout"/>"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span><span class="link-text">로그아웃</span></a></li>
 				</c:if>
-				<li><a href="<c:url value="/region/rt/서울"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">미세먼지현황(36분 전 같이시간표시))</span></a></li>
+				<li><a href="<c:url value="/region/rt/서울"/>"><b><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text" style="color: #FF6C6C;">미세먼지현황</span></b></a></li>
+				<li class=""><a href="<c:url value="/rt/360"/>"><b><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><span class="link-text" style="color: #FF6C6C;">우리 동네 24시</span></b></a></li>
 			</ul>
 		</div>
 	</div>

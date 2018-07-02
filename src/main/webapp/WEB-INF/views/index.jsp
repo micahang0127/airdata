@@ -81,7 +81,7 @@
 		<jsp:include page="/WEB-INF/views/common/nav-header.jsp"></jsp:include>
 		<table style="margin: 20px; ">
 			<tr>
-				<td style="width:50%; text-align: center;"><h2><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>&nbsp;실시간 현황</h2></td>
+				<td style="width:60%; text-align: center; "><h2><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span>&nbsp;실시간 현황</h2></td>
 				<td>
 					<ul style="margin-top:50px;">
 					<li><h5>PM10(미세먼지)</h5>

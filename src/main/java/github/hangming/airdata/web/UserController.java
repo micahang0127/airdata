@@ -1,9 +1,10 @@
 package github.hangming.airdata.web;
 
-import javax.servlet.http.HttpServlet;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,17 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 
-import github.hangming.airdata.dao.StationDao;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import github.hangming.airdata.dao.IUserDao;
+import github.hangming.airdata.dto.Pmdata;
 import github.hangming.airdata.dto.Station;
 import github.hangming.airdata.model.UserDto;
+import github.hangming.airdata.service.PmService;
 import github.hangming.airdata.service.UserService;
 
 @Controller
 public class UserController {
 	
 	@Autowired UserService userService ;
+	@Autowired PmService pmService;
+	@Autowired IUserDao userDao;
 
 	@RequestMapping(value="/register")
 	public String register(Model model, HttpServletRequest req ){
@@ -120,15 +127,50 @@ public class UserController {
 	
 	
 	@RequestMapping(value="/myInfo")
-	String myInfo(HttpSession session){
+	String myInfo(HttpSession session, Model model) throws JsonProcessingException{
 		
-		if(session.getAttribute("LOGIN_USER") != null){
+		UserDto loginUser = (UserDto)session.getAttribute("LOGIN_USER");
+		if(loginUser != null){
 			
 			//session.getAttribute("email");
 			//session.getAttribute("password");
 			System.out.println("email, 비번 확인:"+session.getAttribute("email")+","+session.getAttribute("password"));
 			
-		
+			List<Integer> stationsSeq_fav = userDao.getFavoriteStations(loginUser.getSeq());
+			String stationStr_fav = "관심지역이 없습니다"; 
+			String favSet = ""; // ★★★★★ 로하면 초기 데이터가 안들어가있음. => null로 지정하면 null로 들어가있음. 
+			
+			
+			/* !!!  findAll 로 stations테이블 전체를 가져올 수 있지만, stations 의 데이터가 대량인 경우 한번에 불필요한 데이터까지 다 가지고 오는 셈이므로
+			 	seq가 맞는 것에서만 데이터를 가져 오게 함.  */
+			for(int i=0; i < stationsSeq_fav.size(); i++){
+				int station = stationsSeq_fav.get(i);
+				
+				Station find_location =  pmService.findStationBySeq(station);
+				stationStr_fav = stationStr_fav + "," + find_location.getLocation();
+				
+				
+				favSet = favSet + station + "," + find_location.getLocation() +"/";
+				
+				System.out.println("관심지역 확인"+stationStr_fav);
+				
+				
+			}
+			
+			session.setAttribute("favorites", stationStr_fav);
+			session.setAttribute("favSet", favSet);
+			System.out.println("favSet확인"+favSet);
+			
+			
+			/* !!! ★★★★★ session이나 model 집어넣은 키값은 스크립트에서 호출해 json형태로 파싱 할 때 
+			 * 			 [ '${favSet} 이렇게 호출 하고 JSON.parse('${favSet}'); 이렇게 json파싱함 ]
+			 	한글은 파싱이 안되고 오류남. => so, 아래처럼 java코드(controller)에서  먼저 파싱한 후 그것을 스크립트에서 다시 json파싱을 한다.  	*/
+			ObjectMapper om = new ObjectMapper();
+			String json = om.writeValueAsString(favSet.split("/"));
+			model.addAttribute("favSetjson", json);
+			
+			System.out.println("favSetjson확인"+json);
+			
 			return "myInformation";
 
 		}else{

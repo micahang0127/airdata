@@ -6,6 +6,26 @@
 <head>
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style type="text/css">
+
+select{
+	height: 25px;
+}
+.select_div{
+	margin: 10px;
+
+}
+a > i, a.no_f{
+	color: #DDD;
+}
+a.favorite > i{
+	color : #F00;
+}
+
+
+</style>
+
 <script type="text/javascript">
 /* ★★★   html페이지가 먼저 로드 된 후 !!!! script 실행된다  ( 데이터 삽입할 때 참고. )*/
 
@@ -17,6 +37,59 @@ var src = '${pmjson}';
 					"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
 				   ]}
 	*/
+	
+
+function addStation ( stationId, anchor ) {
+	var pm10 = 80;
+	var pm25 = 40;
+	
+	$.ajax({
+		url : ctxpath + '/favorstation/add',
+		method : 'POST',
+		data : {
+			station: stationId
+		},
+		success : function(res){
+			console.log ( res );
+		//	 [res:success, station : { ... }, pm10 : 80, pm25:35 ]
+			if( res.success){
+				console.log('anchor확인'+ anchor);
+				anchor.removeClass('no_f');
+				anchor.addClass('favorite');
+				alert('관심지역에 추가되었습니다.');
+			}else{
+				alert('추가에 실해 하였습니다 . \n 로그인 여부를 확인해 주세요.');
+			}
+		}
+	});
+}	
+	
+function removeStation ( stationId, anchor ) {
+	 
+	 console.log('removeStation진입 '+ stationId);
+	 
+	 $.ajax({
+		url : ctxpath + '/favorstation/remove',
+		method : 'POST',
+		data : {
+			station: stationId
+		},
+		success : function(res){
+			console.log(res);
+			if(res.success){
+				console.log('관심등록 해제 성공 진입');
+				console.log('anchor확인'+ anchor);
+				anchor.removeClass('favorite').addClass('no_f');
+				alert('관심지역이 취소되었습니다.');
+			}else{
+				alert('관심등록 해제에 실패했습니다.\n 로그인 여부를 확인해 주세요.');
+				
+			}		
+		}
+	 });
+}	
+	
+	
 
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
@@ -114,12 +187,56 @@ $(function() {
     	 * 자바스크립트로  페이지 이동할때 사용하는 코드
     	 */ 
     	 //loadSidoData( stationId );
-
+		
+    	
     	location.href = url;
     });
     
-    loadSidoData( '${station.seq}' );
+    
+	    //관심등록 여부 확인 
+	    var favors = ${favorites};
+	    console.log('favorites확인'+favors);
+	    
+		 // ★★★  배열 안(을 돌며) 특정 값이 있는지? => script의 배열 for문.
+	    var find = favors.find(function(elem){	
+	    	return '${station.seq}' == elem;		// true / false
+	    });
+	    if( find ){
+	    	$('.select_div > a').attr('class','favorite');
+	    }else{
+	    	$('.select_div > a').attr('class','no_f');	
+	    }
+    
+	    
+	    // 관심등록 클릭 제거
+	    $('.select_div > a > i').on('click',function(e){
+	    	e.preventDefault(); 					// a태그로 새로운 url로 페이징 로딩이 안되게 해줌. 
+			// console.log('별클릭');
+	    	var icon = $(e.target);
+	    	var anchor = icon.parent();
+	    	if( anchor.hasClass('favorite')){
+	    		
+	    		var id = anchor.attr('id');
+	    		removeStation( id.substring(0), anchor );
+	    	} else {
+	    		var id = anchor.attr('id');
+	    		addStation( id.substring(0), anchor );
+	    	}
+	    	
+	    	
+	    	
+	    });
+	     
 
+	    
+	    
+	    
+   		
+	    // 데이터  table ajax로 불러옴.
+	    loadSidoData( '${station.seq}' );
+
+    
+    
     
     $('.nav-tabs a[href="#station-map"]').on('shown.bs.tab', function() {
     	
@@ -212,20 +329,26 @@ function loadSidoData( stationId ){
 		<!--
 		[시도명] - [관측소] 
 		 -->
- 		<select name="sido" id="sido">
-			<option value="">지역</option>
-			<!-- <option value="서울">서울</option> -->
-			<c:forEach items="${sido}" var="region" >
-			<option value="${region}">${region}</option>
+		 <div class="select_div">
+	 		<select name="sido" id="sido">
+				<option value="">지역</option>
+				<!-- <option value="서울">서울</option> -->
+				<c:forEach items="${sido}" var="region" >
+				<option value="${region}">${region}</option>
+				</c:forEach>
+			</select>
+		<select name="location" id="location">
+			<option value="">[관측소]</option>
+			<c:forEach items="${stations}" var="s">
+				<option value="${s.seq}">${s.location}</option>
+			
 			</c:forEach>
 		</select>
-	<select name="location" id="location">
-		<option value="">[관측소]</option>
-		<c:forEach items="${stations}" var="s">
-			<option value="${s.seq}">${s.location}</option>
+		&nbsp;&nbsp;
+		<a id="${station.seq}" class="{f}" href="#"><i class="fas fa-star"></i></a> 
 		
-		</c:forEach>
-	</select>
+		
+		</div>
 	
 	<ul class="nav nav-tabs">
 	    <li class="active"><a data-toggle="tab" href="#pm-chart">차트</a></li>

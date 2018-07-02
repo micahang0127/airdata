@@ -14,6 +14,14 @@ a > i , a.no_f {
 a.favorite > i {
 	color : #F00;
 }
+select{
+	width: 55px;
+	height: 25px;
+}
+.select_div{
+	
+	margin: 10px;
+}
 </style>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
@@ -35,6 +43,7 @@ function addStation ( stationId, anchor ) {
 				console.log('anchor확인'+ anchor);
 				anchor.removeClass('no_f');
 				anchor.addClass('favorite');
+				alert('관심지역에 추가되었습니다.');
 			}else{
 				alert('추가에 실해 하였습니다 . \n 로그인 여부를 확인해 주세요.');
 			}
@@ -57,6 +66,7 @@ function addStation ( stationId, anchor ) {
 				console.log('관심등록 해제 성공 진입');
 				console.log('anchor확인'+ anchor);
 				anchor.removeClass('favorite').addClass('no_f');
+				alert('관심지역이 취소되었습니다.');
 			}else{
 				alert('관심등록 해제에 실패했습니다.\n 로그인 여부를 확인해 주세요.');
 				
@@ -112,7 +122,7 @@ function addStation ( stationId, anchor ) {
 					*/
 				
    					var id = anchor.attr('id'); 
-   					removeStation( id.substring(1), anchor ); // substring(1) => 문자열(id) 처음부터 끝까지를 가져온다. 
+   					removeStation( id.substring(1), anchor ); // substring(1) => 문자열(id) 둘째자리부터 끝까지를 가져온다.(앞에  s가 있음으로) 
    	
     			
     			}else {
@@ -244,14 +254,15 @@ function addMarker  (map, infowin, marker, station ) {
 		[시도명] - [관측소] 
 		 -->
 		 <!-- <i class="fas fa-star"></i> -->
- 		<select name="sido" id="sido">
-			<option value="">지역</option>
-			<!-- <option value="서울">서울</option>      sido = 서울,경기,강원,... / region = (서울안)중구, 은평구...같은 관측소-->
-			<c:forEach items="${sido}" var="region" >
-			<option value="${region}">${region}</option>
-			</c:forEach>
-		</select>	
-		
+		<div class="select_div">
+	 		<select name="sido" id="sido">
+				<option value="">지역</option>
+				<!-- <option value="서울">서울</option>      sido = 서울,경기,강원,... / region = (서울안)중구, 은평구...같은 관측소-->
+				<c:forEach items="${sido}" var="region" >
+				<option value="${region}">${region}</option>
+				</c:forEach>
+			</select>	
+		</div>
 		
     	<div id="map" style="width:100%;height:300px;"></div>
 		

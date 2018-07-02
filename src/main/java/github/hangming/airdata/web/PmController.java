@@ -37,7 +37,9 @@ public class PmController {
 	String [] sido = "서울, 부산, 대구, 인천, 광주, 대전, 울산, 경기, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주, 세종".split(", ");
 	
 	@RequestMapping(value="/rt/{stationSeq}", method=RequestMethod.GET)
-	public String realtimeData (@PathVariable Integer stationSeq, Model model ) throws JsonProcessingException {
+	public String realtimeData (@PathVariable Integer stationSeq, Model model, HttpSession session ) throws JsonProcessingException {
+		
+		
 		List<Pmdata> data = pmService.findByStation( stationSeq );  // 최근 24시간 동안의 pmdata테이블의 station(시도seq값)이 같은 것의 전체를 select( pm10, pm25, time, station )
 		System.out.println("콘트롤러 여기"+data);
 		model.addAttribute("pmdata", data);
@@ -58,6 +60,22 @@ public class PmController {
 		 */
 		model.addAttribute("sido", Arrays.asList(sido) );
 		
+		
+		
+		// 관심등록 데이터 확인
+		UserDto loginUser = (UserDto)session.getAttribute("LOGIN_USER"); 
+		if( loginUser != null){
+			List<Integer> stations_fav = userDao.getFavoriteStations(loginUser.getSeq());
+			
+			model.addAttribute("favorites", stations_fav);
+		}
+		else{
+			model.addAttribute("favorites", new ArrayList<Integer>());
+		}
+		
+
+		
+		
 		ObjectMapper om = new ObjectMapper();
 		String json = om.writeValueAsString(data);
 		json = "{ \"data\": @v }".replace("@v", json);
@@ -74,6 +92,7 @@ public class PmController {
 		model.addAttribute("data", data);
 		model.addAttribute("sido", Arrays.asList(this.sido));
 		model.addAttribute("sidoName", sido);
+		
 		
 		System.out.println("data 확인 : "+data);
 		

@@ -120,7 +120,7 @@ function drawChart() {
 	 ];
 	
 
-		for(i= 0; i< srcData.data.length; i++){
+		for(i= srcData.data.length-1; i >= 0; i--){
 			// 2018-03-31 19:00:00.0
 			var hh = srcData.data[i].time.substring(11, 16);
 			var pm10 = parseInt(srcData.data[i].pm10);
@@ -142,7 +142,6 @@ function drawChart() {
 
   var options = {
     title: '미세먼지',
-    curveType: 'function',
     legend: { position: 'bottom' } ,
     chartArea: { width : '100%', height: '80%'}
   };

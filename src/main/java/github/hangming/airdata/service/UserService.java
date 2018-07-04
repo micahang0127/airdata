@@ -66,6 +66,10 @@ public class UserService{
 		
 		String email = vo.getEmail();
 		String title = "[회원가입 완료]";
+		/*
+		 * TODO 이메일이 실제 존재하는지 확인하는 방법 
+		 *      https://stackoverflow.com/questions/13514005/how-to-check-mail-address-is-exists-or-not 참조
+		 */
 		emailService.sendTestMail(email, title, html);
 		
 		return user;		

@@ -351,7 +351,7 @@ ul.tabs li.active {
 														<td><br/><div class="btn-group" role="group"
 																aria-label="...">
 																<!-- <button type="button" class="btn btn-default">Left</button> -->
-															</div><div id="text">※클릭하면 해당 지역데이터 보기로 갑니다.</div></td>
+															</div><div id="text">※클릭하면 해당 지역 24시 데이터를 볼 수 있습니다</div></td>
 													</tr>
 												</table>
 											</ul>

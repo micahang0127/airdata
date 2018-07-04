@@ -23,6 +23,12 @@ a.favorite > i{
 	color : #F00;
 }
 
+.dataFail{
+	width: 80%;
+	text-align: center;
+	padding-top: 30px;
+	color: #ca3016;
+}
 
 </style>
 
@@ -37,8 +43,14 @@ var src = '${pmjson}';
 					"stationName":null,"lat":0.0,"lng":0.0,"pm10Value":16.0,"pm25Value":9.0}, {....}, ....
 				   ]}
 	*/
+var srcData = JSON.parse ( src );
+	/*
+	srcData.data = [ { ....}, { ....}, {....} ]
 	
+	*/
 
+	
+	
 function addStation ( stationId, anchor ) {
 	var pm10 = 80;
 	var pm25 = 40;
@@ -89,39 +101,44 @@ function removeStation ( stationId, anchor ) {
 	 });
 }	
 	
+if(srcData.data[0] == null){
 	
+	console.log('차트에 필요한 데이터가 없습니다');
 
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
+	
+}
+else{
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawChart); 
+}
 function drawChart() {
-	var srcData = JSON.parse ( src );
-	/*
-	srcData.data = [ { ....}, { ....}, {....} ]
 	
-	*/
 	
 	var pmData = [
 	    ['Time', 'PM2.5', 'PM10'],
 	 
 	 ];
 	
-	for(i= 0; i< srcData.data.length; i++){
-		// 2018-03-31 19:00:00.0
-		var hh = srcData.data[i].time.substring(11, 16);
-		var pm10 = parseInt(srcData.data[i].pm10);
-		var pm25 = parseInt(srcData.data[i].pm25);
-		pmData.push ( [hh, pm25, pm10] );	
-	}
+
+		for(i= 0; i< srcData.data.length; i++){
+			// 2018-03-31 19:00:00.0
+			var hh = srcData.data[i].time.substring(11, 16);
+			var pm10 = parseInt(srcData.data[i].pm10);
+			var pm25 = parseInt(srcData.data[i].pm25);
+			pmData.push ( [hh, pm25, pm10] );	
+		}
+		
+		pmData.push ( ['-', 0, 1 ] );
+		
+		 /*   ['11:00',  45,      40],
+		    ['10:00',  11,      46],
+		    ['09:00',  66,      12] 
+		
+		 */
 	
-	pmData.push ( ['ddd', 32, 44 ] );
-	/*
-	   ['11:00',  45,      40],
-	    ['10:00',  11,      46],
-	    ['09:00',  66,      12]
-	*/
 	
   var data = google.visualization.arrayToDataTable(pmData);
+	
 
   var options = {
     title: '미세먼지',
@@ -141,7 +158,7 @@ function resize () { /*  차트 사이즈 맞추기 (인터넷 창 줄였다 최
     // chart.draw(data, options);
     drawChart();
 }
-window.onresize = resize;
+window.onresize = resize;  	
 </script>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
@@ -234,9 +251,9 @@ $(function() {
    		
 	    // 데이터  table ajax로 불러옴.
 	    loadSidoData( '${station.seq}' );
+		
+    
 
-    
-    
     
     $('.nav-tabs a[href="#station-map"]').on('shown.bs.tab', function() {
     	
@@ -256,6 +273,7 @@ $(function() {
     	
     	});
     })
+   
 
 });
 function drawStation ( station ) {
@@ -283,18 +301,38 @@ function loadSidoData( stationId ){
 		url : ctxpath + '/api/station/rt/' + stationId, 
 		method : 'GET',
 		success : function ( res ){
-			console.log('res.data'+ res.data)
+			console.log('res.data'+ res.data);
 			var loc = $('#location_val > tbody').empty();   /*   $('')에   html소스부분 씀     */
-			var template = '<tr><td>{time}</td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm10}</td><td>{grade_pm10}</td></tr>';
+			var template = '<tr><td>{time}</td><td>{pm25}</td><td style="color:{color25G}">{grade_pm25}</td><td>{pm10}</td><td style="color: {color10G}">{grade_pm10}</td></tr>';
 			var tmp = res.data; 
-			for ( var i = 0; i < res.data.length ; i++){
+			
+			if(tmp[0]== null){
 				
-				var html = template.replace('{time}', tmp[i].time.substring(0,16))
-								 	.replace('{pm25}', tmp[i].pm25)
-								 	.replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
-								 	.replace('{pm10}', tmp[i].pm10)
-								 	.replace('{grade_pm10}', gradePm10(tmp[i].pm10).msg);
-				loc.append(html);
+				
+				var locCh = $('.nav-tabs').empty();
+				var templateCh = '<li class="active"><a data-toggle="tab" href="#station-map">지도</a></li>';
+				locCh.append(templateCh);
+				
+				 
+				console.log('관측소 데이터 없음');
+				//alert('해당 관측소의 데이터가 확인 되어지지 않습니다.');
+				template = '<tr><td></td><td></td><td class="dataFail"><br/>해당 관측소의 데이터가 확인 되어지지 않습니다.</td><td></td><td></td></tr>'
+				//var html = '<tr style="text-align: center;"><td>관측소의 데이터가 확인 되어지지 않습니다.</td></tr>'
+				loc.append(template);
+				
+				
+			}else{
+				for ( var i = 0; i < res.data.length ; i++){
+						
+						var html = template.replace('{time}', tmp[i].time.substring(0,16))
+										 	.replace('{pm25}', tmp[i].pm25)
+										 	.replace('{color25G}', gradePm25(tmp[i].pm25).color)
+										 	.replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
+										 	.replace('{pm10}', tmp[i].pm10)
+										 	.replace('{color10G}', gradePm10(tmp[i].pm10).color)
+										 	.replace('{grade_pm10}', gradePm10(tmp[i].pm10).msg);
+						loc.append(html);
+					}
 			}
 		},
 		error : function ( xhr, state, error ){
@@ -346,13 +384,11 @@ function loadSidoData( stationId ){
 		</select>
 		&nbsp;&nbsp;
 		<a id="${station.seq}" class="{f}" href="#"><i class="fas fa-star"></i></a> 
-		
-		
 		</div>
 	
 	<ul class="nav nav-tabs">
-	    <li class="active"><a data-toggle="tab" href="#pm-chart">차트</a></li>
-	    <li><a data-toggle="tab" href="#station-map">지도</a></li>
+		<li class="active"><a data-toggle="tab" href="#pm-chart" >차트</a></li>
+	   <li><a data-toggle="tab" href="#station-map">지도</a></li>
   	</ul>
 	<div class="tab-content">
     <div id="pm-chart" class="tab-pane fade in active">

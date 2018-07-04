@@ -138,14 +138,20 @@ public class PmController {
 		List<Pmdata> data = pmService.findByStation( stationId );  // 최근 24시간 동안의 pmdata테이블의 station(시도seq값)이 같은 것의 전체를 select( pm10, pm25, time, station )
 		System.out.println("콘트롤러 여기 stationId"+stationId);
 		//model.addAttribute("pmdata", data);
-		
 
+		
+		if(data.isEmpty()){ // !!! 대구 -> 좌동 사라짐 
+			System.out.println("이 관측소 의 데이터는 현재 사라졌습니다. ");
+			
+		}
+		
+		
 		ObjectMapper om = new ObjectMapper();
 		String json = om.writeValueAsString(data);
 		json = "{ \"data\": @v }".replace("@v", json);
-
 		System.out.println("콘트롤러 여기 json"+data);
 		
+
 		return json;
 		
 	}

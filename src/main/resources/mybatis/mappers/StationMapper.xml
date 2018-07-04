@@ -76,5 +76,22 @@
 	
 	</select>
 	
+	<select id="findFavUser" parameterType="Pmdata" resultType="string">
+	<![CDATA[
+		select 
+			u.email
+		from 
+			favor_station fs
+		join 
+			user u on fs.user = u.seq
+		where 
+			fs.station = #{station} 
+			and 
+			(fs.pm10_limit <= #{pm10Value} or fs.pm25_limit <= #{pm25Value}) 
+			and 
+			u.verified = 1;
+	    ]]>
+	</select>
+	
 	
 </mapper>

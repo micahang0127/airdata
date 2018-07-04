@@ -7,6 +7,10 @@
 <jsp:include page="/WEB-INF/views/common/common-head.jsp"></jsp:include>
 
 <style type="text/css">
+.col-sm-6{
+	width: 100%;
+}
+
 a > i , a.no_f {
 	color: #DDD;
 }
@@ -81,8 +85,9 @@ function addStation ( stationId, anchor ) {
     	success : function ( res ) {
     		console.log ( res );
     		console.log(res.data);
+    		
     		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
-    		var template = '<tr><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td>{pm25}</td><td>{grade_pm25}</td><td>{pm100}</td><td>{grade_pm100}</td></tr>';
+    		var template = '<tr><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td style="color: {color25}">{pm25}</td><td style="color:{color25G};">{grade_pm25}</td><td style="color:{color10};">{pm100}</td><td style="color:{color10G};">{grade_pm100}</td></tr>';
     		var tmp = res.data; // 39개 
     		var favors = res.favorites; // [ 360, 362]
     		for ( var i = 0 ; i < res.data.length ; i ++ ) {
@@ -90,8 +95,10 @@ function addStation ( stationId, anchor ) {
     								.replace('{seq}', tmp[i].station)
     			                   .replace('{name}', tmp[i].stationName)
     			                   .replace('{pm25}', tmp[i].pm25)
+    			                   .replace('{color25G}', gradePm25(tmp[i].pm25).color)
     			                   .replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
     			                   .replace('{pm100}', tmp[i].pm10 )
+    			                   .replace('{color10G}', gradePm10(tmp[i].pm10).color)
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
     			// 배열안에 특정 값(원소)가 있는지 없는지? (배열favors를  돌면서 특정 값을 찾아낸다. 즉 , 배열 for문 돌기의 script식 )
     			var find =  favors.find(function( elem){  
@@ -105,8 +112,11 @@ function addStation ( stationId, anchor ) {
     			}
     			
     			loc.append ( html );
+    			//$('.gradeForcolor').css('color','red');
+    			//gradePm25(tmp[i].pm25).color;
     		}
-    		  		
+    		  	
+    		
     		drawStation(res.data);
     		
     		$('#location a > i').on('click',function(e){ // ★★★★ 클릭되면 오는 것이 아니라, 페이지가 로딩 될 때 부터 와서 준비 함!! => 클릭이 되었을 때, 여기로 오는게 아닌, 바로 아래  var icon = $(e.target) 부터 실행 된다. !!!
@@ -228,10 +238,18 @@ function drawStation ( stations ) {
 }
 
 function addMarker  (map, infowin, marker, station ) {
-    daum.maps.event.addListener(marker, 'click', function() {
-    	infowin.setContent( station.stationName );
+	var html = '<p>' + station.stationName + '</p>';
+	html +=  '<ul>';
+	<%--// TODO 값이 0이면 데이터 없음과 같은 적절한 메세지를 보여줘야 함 --%> 
+	html += '<li> PM 2.5: ' + station.pm25 + '</li>';
+	html += '<li> PM 10 : ' + station.pm10 + '</li>';
+	html += '</ul>';
+	var showPopup = function() {
+    	infowin.setContent( html );
     	infowin.open(map, marker);
-    });
+    };
+    daum.maps.event.addListener(marker, 'click', showPopup);
+    daum.maps.event.addListener(marker, 'mouseover', showPopup);
 }
 
     

@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import github.hangming.airdata.dto.Pmdata;
 import github.hangming.airdata.model.UserDto;
 
 @Repository
@@ -38,6 +39,10 @@ public class UserDao implements IUserDao {
 	
 	public UserDto insertUser(UserDto vo){
 		//IUserDao dao = session.getMapper(IUserDao.class);
+		if ( getEmailCheck(vo.getEmail()) != null ) {
+			// existing email!
+			throw new RuntimeException("존재하는 이메일: " + vo.getEmail());
+		}
 		session.insert("UserMapper.insertUser", vo);
 		return vo;
 	}
@@ -100,5 +105,12 @@ public class UserDao implements IUserDao {
 		
 		
 		return true;
+	}
+
+
+
+	@Override
+	public List<String> getfavEmail(Pmdata pmdata) {
+		return session.selectList("StationMapper.findFavUser", pmdata);
 	}
 }

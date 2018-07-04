@@ -48,7 +48,7 @@
 			method : 'GET',
 			success : function(aa) { // aa(맘대로 지정)에는 해당 controller에서 return값이 들어있다.
 				var loc = $('.all').empty();
-				var templet = '<div class="thumbnail" style="width:150px;height:150px; float:left; margin:20px; text-align: center; "><h4><a href="/airdata/region/rt/[sido]" id="sido">{sido}</a></h4><p id="grade">{grade}</p><p id="pm10"><b>{pm10}</b>[10]</p><p id="pm25"><b>{pm25}</b>[2.5]</p></div>';
+				var templet = '<div class="thumbnail" style="width:150px;height:150px; float:left; margin:20px; text-align: center; "><h4><a href="/airdata/region/rt/[sido]" id="sido">{sido}</a></h4><p id="grade" style="color:{color}">{grade}</p><p id="pm10"><b>{pm10}</b>[10]</p><p id="pm25"><b>{pm25}</b>[2.5]</p></div>';
 				var tem = aa;
 				for (i = 0; i < sido.length; i++) {
 
@@ -58,6 +58,7 @@
 
 							var html = templet.replace('[sido]',sido[i])
 												.replace('{sido}',sido[i])
+												.replace('{color}', gradePm10(srcData[j].avgPm10).color)
 												.replace('{grade}',gradePm10(srcData[j].avgPm10).msg)
 												.replace('{pm10}',srcData[j].avgPm10)
 												.replace('{pm25}',srcData[j].avgPm25);

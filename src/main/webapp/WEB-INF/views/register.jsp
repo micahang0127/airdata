@@ -120,7 +120,7 @@
 					
 					if( res.success ){
 						alert('회원가입이 완료되었습니다');
-						location.href = ctxpath+"/index";
+						location.href = ctxpath;
 					}
 					else {
 						alert('회원가입을 실패하였습니다. 잠시 후 다시 시도해주세요.');

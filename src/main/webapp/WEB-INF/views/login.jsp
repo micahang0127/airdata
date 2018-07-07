@@ -50,7 +50,7 @@
 				console.log('dologin'+result);
 				
 				if(res.success == true){
-					location.href = ctxpath+"/index";
+					location.href = ctxpath;
 				}
 				else{
 					$('#login-error').html('로그인에 실패했습니다. 다시 시도해 주세요');

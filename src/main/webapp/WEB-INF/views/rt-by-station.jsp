@@ -23,11 +23,67 @@ a.favorite > i{
 	color : #F00;
 }
 
+
+.modal-dialog{
+	width: 300px;
+}
+
+.modal-body{
+	padding-bottom: 0px;
+}
+.modal-footer{
+	padding: 10px;
+}
+
 .dataFail{
 	width: 80%;
 	text-align: center;
 	padding-top: 30px;
 	color: #ca3016;
+}
+
+
+.slidecontainer {
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 10px;
+}
+
+
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+/*  background-image:-webkit-linear-gradient(to right, rea, black); */
+     outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
 }
 
 </style>
@@ -51,15 +107,15 @@ var srcData = JSON.parse ( src );
 
 	
 	
-function addStation ( stationId, anchor ) {
-	var pm10 = 80;
-	var pm25 = 40;
+function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
 	
 	$.ajax({
 		url : ctxpath + '/favorstation/add',
 		method : 'POST',
 		data : {
-			station: stationId
+			station: stationId,
+			pm10_limit: pm10_limit,
+			pm25_limit: pm25_limit
 		},
 		success : function(res){
 			console.log ( res );
@@ -68,6 +124,7 @@ function addStation ( stationId, anchor ) {
 				console.log('anchor확인'+ anchor);
 				anchor.removeClass('no_f');
 				anchor.addClass('favorite');
+				
 				alert('관심지역에 추가되었습니다.');
 			}else{
 				alert('추가에 실해 하였습니다 . \n 로그인 여부를 확인해 주세요.');
@@ -101,16 +158,10 @@ function removeStation ( stationId, anchor ) {
 	 });
 }	
 	
-if(srcData.data[0] == null){
-	
-	console.log('차트에 필요한 데이터가 없습니다');
 
-	
-}
-else{
-	google.charts.load('current', {'packages':['corechart']});
-	google.charts.setOnLoadCallback(drawChart); 
-}
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart); 
+
 function drawChart() {
 	
 	
@@ -143,7 +194,9 @@ function drawChart() {
   var options = {
     title: '미세먼지',
     legend: { position: 'bottom' } ,
-    chartArea: { width : '100%', height: '80%'}
+    chartArea: { width : '100%', height: '80%'},
+    max: 200,
+    
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('pm_chart'));
@@ -231,12 +284,50 @@ $(function() {
 	    	var icon = $(e.target);
 	    	var anchor = icon.parent();
 	    	if( anchor.hasClass('favorite')){
+	    
 	    		
 	    		var id = anchor.attr('id');
 	    		removeStation( id.substring(0), anchor );
 	    	} else {
-	    		var id = anchor.attr('id');
-	    		addStation( id.substring(0), anchor );
+	    		
+	    		
+	    		// modal 로 기준치 받기
+				$('#Modal').modal("toggle");
+	    		
+				var slider10 = document.getElementById("Range10");
+				var slider25= document.getElementById("Range25");
+
+				var Scanf10= document.getElementById("Pm10Scanf");
+				var Scanf25= document.getElementById("Pm25Scanf");
+		
+				$(Scanf10).val(slider10.value);
+				$(Scanf25).val(slider25.value);
+				
+				// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
+				 slider25.oninput = function() {
+					 $(Scanf25).val(slider25.value);
+			 	}
+				 slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
+					 $(slider10).val(Scanf10.value);				 
+				 }
+				 Scanf25.oninput = function() {
+				 	$(slider25).val(Scanf25.value);				 
+				 }				
+				 slider10.oninput = function() {	/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
+					 $(Scanf10).val(slider10.value);
+				 }
+				 
+				 
+				 
+				
+				$('#addFav').on('click',function(){
+
+					var id = anchor.attr('id');
+		    		addStation( id.substring(0), anchor, slider10.value , slider25.value );
+		    		$('#Modal').modal('hide');
+					
+				});
+	    		
 	    	}
 	    	
 	    	
@@ -302,17 +393,13 @@ function loadSidoData( stationId ){
 		success : function ( res ){
 			console.log('res.data'+ res.data);
 			var loc = $('#location_val > tbody').empty();   /*   $('')에   html소스부분 씀     */
-			var template = '<tr><td>{time}</td><td>{pm25}</td><td style="color:{color25G}">{grade_pm25}</td><td>{pm10}</td><td style="color: {color10G}">{grade_pm10}</td></tr>';
+			var template = '<tr style="background-color: {backColor}"><td>{time}</td><td>{pm25}</td><td style="color:{color25G}">{grade_pm25}</td><td>{pm10}</td><td style="color: {color10G}">{grade_pm10}</td></tr>';
 			var tmp = res.data; 
 			
 			if(tmp[0]== null){
 				
 				
-				var locCh = $('.nav-tabs').empty();
-				var templateCh = '<li class="active"><a data-toggle="tab" href="#station-map">지도</a></li>';
-				locCh.append(templateCh);
 				
-				 
 				console.log('관측소 데이터 없음');
 				//alert('해당 관측소의 데이터가 확인 되어지지 않습니다.');
 				template = '<tr><td></td><td></td><td class="dataFail"><br/>해당 관측소의 데이터가 확인 되어지지 않습니다.</td><td></td><td></td></tr>'
@@ -323,7 +410,8 @@ function loadSidoData( stationId ){
 			}else{
 				for ( var i = 0; i < res.data.length ; i++){
 						
-						var html = template.replace('{time}', tmp[i].time.substring(0,16))
+						var html = template.replace('{backColor}',gradePm25(tmp[i].pm25).backColor)
+											.replace('{time}', tmp[i].time.substring(0,16))
 										 	.replace('{pm25}', tmp[i].pm25)
 										 	.replace('{color25G}', gradePm25(tmp[i].pm25).color)
 										 	.replace('{grade_pm25}', gradePm25(tmp[i].pm25).msg)
@@ -350,7 +438,6 @@ function loadSidoData( stationId ){
 	 ★★★  javaScript 변수를 < % % > 로 자바코드로 넘겨 줄 수 없음!!! ( 반대로는 가능  )
 	 ★★★ $('#grade_25') 로 하면 첫줄만 나옴 ㅠ 왠지 모름 ㅠㅠ 
 */
-
 
 
 </script>
@@ -382,22 +469,53 @@ function loadSidoData( stationId ){
 			</c:forEach>
 		</select>
 		&nbsp;&nbsp;
-		<a id="${station.seq}" class="{f}" href="#"><i class="fas fa-star"></i></a> 
+		<a id="${station.seq}" class="{f}" data-target="#Modal"href="#"><i class="fas fa-star"  data-target="#Modal" ></i></a> 
 		</div>
-	
-	<ul class="nav nav-tabs">
-		<li class="active"><a data-toggle="tab" href="#pm-chart" >차트</a></li>
-	   <li><a data-toggle="tab" href="#station-map">지도</a></li>
-  	</ul>
-	<div class="tab-content">
-    <div id="pm-chart" class="tab-pane fade in active">
-      <%-- ${station.region} > ${station.location} --%>
-	  <div id="pm_chart" style="height: 300px"></div>
-    </div>
-    <div id="station-map" class="tab-pane fade">
-    	<div id="map" style="width:100%;height:300px;"></div>
-    </div>
-  </div>
+		
+		<!-- 차트 , 맵 -->
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#pm-chart" >차트</a></li>
+		   <li><a data-toggle="tab" href="#station-map">지도</a></li>
+	  	</ul>
+		<div class="tab-content">
+	    <div id="pm-chart" class="tab-pane fade in active">
+	      <%-- ${station.region} > ${station.location} --%>
+		  <div id="pm_chart" style="height: 300px"></div>
+	    </div>
+	    <div id="station-map" class="tab-pane fade">
+	    	<div id="map" style="width:100%;height:300px;"></div>
+	    </div>
+	  </div>
+  
+  		<!-- 모달 창으로 기준값 받기 -->
+		<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"> 
+		  <div class="modal-dialog"> <!-- 모달 창 넓이 css -->
+		    <div class="modal-content"> <!-- 모달 창 투명도 제로 css -->
+		      <div class="modal-body">
+		        <div class="form-group">
+		            <label class="control-label">PM10(미세먼지)</label>
+		            	<div class="slidecontainer">   <!--  range sliders 데이터 받는 바 -->
+							<input type="range" min="0" max="210" value="151" class="slider" id="Range10">
+						</div>
+		           		<input type="text" class="form-control" id="Pm10Scanf"  placeholder="입력한 값 초과시 메일로 알려드립니다." value="">
+		        </div>
+		        <div class="form-group">
+		        	<label class="control-label">PM2.5(초미세먼지)</label>
+		         		<div class="slidecontainer">
+		  					<input type="range" min="0" max="110" value="76" class="slider" id="Range25">
+						</div>
+		        	    <input type="text" class="form-control" id="Pm25Scanf"  placeholder="입력한 값 초과시 메일로 알려드립니다." value="">
+		         </div>
+		      </div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        	<button type="button" class="btn btn-primary" id="addFav" >추가</button>
+		      	</div>
+		    </div>
+		  </div>
+		</div>
+  
+		<!-- 본문 table -->
 		<table class="table" id="location_val">
 		<thead>
 			<tr>

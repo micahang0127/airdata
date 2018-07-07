@@ -7,6 +7,14 @@
 		<result column="email" javaType="String"/>
 		<result column="pw" javaType="String"/>		
 	</resultMap> -->
+	<resultMap type="FavorStationDto" id="FavorStationMap">
+		<result column="user" property="user"></result>
+		<result column="station" property="station"></result>
+		<result column="pm10_limit" property="pm10Limit"></result>
+		<result column="pm25_limit" property="pm25Limit"></result>
+	</resultMap>
+	
+	
 	<select id="getUser" parameterType="map" resultType="github.hangming.airdata.model.UserDto">
 	select * from user where email = #{e} and password = #{p}
 	</select>
@@ -35,15 +43,25 @@
 	
 	<select id="getFavoriteStations" parameterType="long" resultType="integer">
 	select station from favor_station where user = #{user};
+	</select> 
+	
+	<select id="getFavoriteStationDetail" parameterType="long" resultMap="FavorStationMap">
+	select 
+		f.*, s.location 
+	from 
+		favor_station f , stations s 
+	where 
+		f.station= s.seq 
+	and
+	 	user=#{user};
 	</select>
 	
-	<!-- 
-	<select id="getFavoriteStationDetail" parameterType="long" resultType="Station">
-	select * from favor_station where user = #{user};
-	</select>
-	 -->
 	
-	 
+	<update id="changePmLimit"  parameterType="map" >
+	 update favor_station set pm10_limit= #{pm10Limit} , pm25_limit= #{pm25Limit} where user = #{user} and station = #{station};
+ 	</update> 
+	  
+	  
 	<delete id="delectFavoriteStation" parameterType="map">
 	 delete from airstation.favor_station where user= #{user} and station= #{station};
 	 </delete> 

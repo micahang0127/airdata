@@ -26,11 +26,76 @@ select{
 	
 	margin: 10px;
 }
+
+
+ 
+.modal-dialog{
+	width: 300px;
+}
+
+.modal-body{
+	padding-bottom: 0px;
+}
+.modal-footer{
+	padding: 10px;
+}
+
+.dataFail{
+	width: 80%;
+	text-align: center;
+	padding-top: 30px;
+	color: #ca3016;
+}
+
+
+.slidecontainer {
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 10px;
+}
+
+
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+/*  background-image:-webkit-linear-gradient(to right, rea, black); */
+     outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+} 
+
 </style>
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
 
-function addStation ( stationId, anchor ) {
+function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
 	var pm10 = 80;
 	var pm25 = 40;
 	
@@ -38,7 +103,9 @@ function addStation ( stationId, anchor ) {
 		url : ctxpath + '/favorstation/add',
 		method : 'POST',
 		data : {
-			station: stationId
+			station: stationId,
+			pm10_limit: pm10_limit,
+			pm25_limit: pm25_limit
 		},
 		success : function(res){
 			console.log ( res );
@@ -79,19 +146,23 @@ function addStation ( stationId, anchor ) {
 	 });
  }
  function loadSidoData ( sido ) {
+	 
+	 
 	$.ajax({
     	url : ctxpath + '/api/region/rt/' + sido ,
     	method : 'GET',
     	success : function ( res ) {
     		console.log ( res );
     		console.log(res.data);
+    		var favors = res.favorites; // [ 360, 362]
     		
     		var loc = $('#location > tbody').empty(); /* $('')에   html소스부분 씀 */
-    		var template = '<tr><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="/airdata/rt/{seq}">{name}</a></td><td style="color: {color25}">{pm25}</td><td style="color:{color25G};">{grade_pm25}</td><td style="color:{color10};">{pm100}</td><td style="color:{color10G};">{grade_pm100}</td></tr>';
+    		var template = '<tr style="background-color: {backColor}; "><td><a id="s{sido}" class="{f}" href="#"><i class="fas fa-star"></i></a> <a href="${pageContext.request.contextPath}/rt/{seq}"><b>{name}</b></a></td><td style="color: {color25}">{pm25}</td><td style="color:{color25G};">{grade_pm25}</td><td style="color:{color10};">{pm100}</td><td style="color:{color10G};">{grade_pm100}</td></tr>';
     		var tmp = res.data; // 39개 
-    		var favors = res.favorites; // [ 360, 362]
-    		for ( var i = 0 ; i < res.data.length ; i ++ ) {
-    			var html = template.replace('{sido}', tmp[i].station)
+    		
+			for ( var i = 0 ; i < res.data.length ; i ++ ) {
+    			var html = template.replace('{backColor}', gradePm25(tmp[i].pm25).backColor )
+    								.replace('{sido}', tmp[i].station)
     								.replace('{seq}', tmp[i].station)
     			                   .replace('{name}', tmp[i].stationName)
     			                   .replace('{pm25}', tmp[i].pm25)
@@ -100,16 +171,19 @@ function addStation ( stationId, anchor ) {
     			                   .replace('{pm100}', tmp[i].pm10 )
     			                   .replace('{color10G}', gradePm10(tmp[i].pm10).color)
     			                   .replace('{grade_pm100}', gradePm10(tmp[i].pm10).msg );
-    			// 배열안에 특정 값(원소)가 있는지 없는지? (배열favors를  돌면서 특정 값을 찾아낸다. 즉 , 배열 for문 돌기의 script식 )
-    			var find =  favors.find(function( elem){  
-    				return tmp[i].station == elem;
-    			});
-    			if( find ) {   /*  find가 true이면 favorite이라 넣어줌 (즉, 관측소중 관심으로 등록된건 class= "favorite" ) */
-    				html = html.replace('{f}', 'favorite');
-    			} else {
-    				html = html.replace('{f}', 'no_f');   /* 관심등록 아직 안된건 class=" " 로 됨.  */
-    				
-    			}
+
+    			
+    			
+	    			// 배열안에 특정 값(원소)가 있는지 없는지? (배열favors를  돌면서 특정 값을 찾아낸다. 즉 , 배열 for문 돌기의 script식 )
+	    			var find =  favors.find(function( elem){  
+	    				return tmp[i].station == elem;
+	    			});
+	    			if( find ) {   /*  find가 true이면 favorite이라 넣어줌 (즉, 관측소중 관심으로 등록된건 class= "favorite" ) */
+	    				html = html.replace('{f}', 'favorite');
+	    			} else {
+	    				html = html.replace('{f}', 'no_f');   /* 관심등록 아직 안된건 class=" " 로 됨.  */
+	    			}
+	   			
     			
     			loc.append ( html );
     			//$('.gradeForcolor').css('color','red');
@@ -117,9 +191,12 @@ function addStation ( stationId, anchor ) {
     		}
     		  	
     		
-    		drawStation(res.data);
+    		drawStation( res.data, res.favorites);
     		
-    		$('#location a > i').on('click',function(e){ // ★★★★ 클릭되면 오는 것이 아니라, 페이지가 로딩 될 때 부터 와서 준비 함!! => 클릭이 되었을 때, 여기로 오는게 아닌, 바로 아래  var icon = $(e.target) 부터 실행 된다. !!!
+    		
+    		
+    		/* fa-star  #location a > i */
+    		$('.fa-star').on('click',function(e){ // ★★★★ 클릭되면 오는 것이 아니라, 페이지가 로딩 될 때 부터 와서 준비 함!! => 클릭이 되었을 때, 여기로 오는게 아닌, 바로 아래  var icon = $(e.target) 부터 실행 된다. !!!
     			e.preventDefault(); 					// a태그로 새로운 url로 페이징 로딩이 안되게 해줌. 
     			// console.log('별클릭');
     			var icon = $(e.target); 				//(지금)클릭 된 애가 누군지(이벤트를 발생시킨 녀석) 
@@ -136,12 +213,49 @@ function addStation ( stationId, anchor ) {
    	
     			
     			}else {
-    				var id = anchor.attr('id');
-    				addStation(id.substring(1), anchor);
     				
-    			}
+    				
+    				
+    	    		// modal 로 기준치 받기
+    				$('#Modal').modal("toggle");
+    	    		
+    				var slider10 = document.getElementById("Range10");
+    				var slider25= document.getElementById("Range25");
+
+    				var Scanf10= document.getElementById("Pm10Scanf");
+    				var Scanf25= document.getElementById("Pm25Scanf");
+    		
+    				$(Scanf10).val(slider10.value);
+    				$(Scanf25).val(slider25.value);
+    				
+    				// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
+    			 	 slider25.oninput = function() {
+    					 $(Scanf25).val(slider25.value);
+    			 	} 
+    				  slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
+    					 $(slider10).val(Scanf10.value);				 
+    				 }  
+    			 	 Scanf25.oninput = function() {
+    				 	$(slider25).val(Scanf25.value);				 
+    				 }	 			
+    				slider10.oninput = function() {		/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
+    					 $(Scanf10).val(slider10.value);
+    				 } 
+    				 
+    				 
+    				 
+    				
+    				$('#addFav').on('click',function(){
+    				
+	    				var id = anchor.attr('id');
+    					addStation(id.substring(1), anchor, slider10.value , slider25.value );
+    					$('#Modal').modal('hide');
+    					
+    				});
+    				
+    				}
     			
-    			
+    		
     			
     			
     			
@@ -154,8 +268,10 @@ function addStation ( stationId, anchor ) {
     			*/
     			// anchor.toggleClass ( 'favorite');
     			
-    		});
-    		
+    		}); 
+    			
+    			
+    	
     	}, 
     	error : function ( xhr, state, error ) {
 			console.log ( xhr );        		
@@ -163,6 +279,12 @@ function addStation ( stationId, anchor ) {
     	
     });
 }
+ 
+ 
+
+ 
+ 
+ 
 $(function() {
 	$('#sido').val('${sidoName}');  /* ★★★★★  이것을 해야 페이지가 로드 될때 바로 select option에 
 													기본 서울로 나옴. url에 /서울.. 이런식으로 주었음으로 !!! */
@@ -185,10 +307,13 @@ $(function() {
 });
     
     
-function drawStation ( stations ) {
+function drawStation ( stations, favorites) {
 	// station.lat, station.lng;
 	// map.setCenter(station.lat, station.lng);
 	// 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+	
+	//var stations = res.data;
+
 	var bounds = new daum.maps.LatLngBounds();  
 	
 	var container = document.getElementById('map');
@@ -232,18 +357,51 @@ function drawStation ( stations ) {
 		    });
 		 }) ( marker, stations[i] );
 	 */
-	     addMarker ( map,infowin, marker, stations[i] );
+	     addMarker ( map,infowin, marker,  stations[i], favorites  );
 	}
 	map.setBounds(bounds);
 }
 
-function addMarker  (map, infowin, marker, station ) {
-	var html = '<p>' + station.stationName + '</p>';
+function addMarker  (map, infowin, marker, station, favors) {
+
+	var html = '<div style="margin-top:10px;"><p><b>&nbsp;&nbsp;' + station.stationName + '</b>&nbsp;&nbsp;<a id="s{sido}" class="{f}"  href="#"><i class="fas fa-star"></i></a></p>';
+	var pm25 = station.pm25;
+	var pm10 = station.pm10; 
+	var color25 = gradePm25(station.pm25).color;
+	var color10 = gradePm10(station.pm10).color;
+	
+	
+	if( station.pm25 == 0){
+		pm25 = '-';
+	}
+	if( station.pm10 == 0){
+		pm10 = '-';
+	}
+	
+	
 	html +=  '<ul>';
-	<%--// TODO 값이 0이면 데이터 없음과 같은 적절한 메세지를 보여줘야 함 --%> 
-	html += '<li> PM 2.5: ' + station.pm25 + '</li>';
-	html += '<li> PM 10 : ' + station.pm10 + '</li>';
-	html += '</ul>';
+	html += '<li><b style=" color:'+ color25 +';"> ' + pm25 + '</b>(2.5)&nbsp;&nbsp;<b style="color:'+ color25 +';">'+ gradePm25(station.pm25).msg+'</b></li>';
+	html += '<li><b style=" color:'+ color10 +';">' + pm10 + '</b>(10)&nbsp;&nbsp;<b style="color:'+ color10 +';">'+ gradePm10(station.pm10).msg+'</b></li>';
+	html += '</ul></div>';
+	
+	
+	html = html.replace('{sido}', station.station);
+	
+ 	var find =  favors.find(function( elem){  
+		return station.station == elem;
+	});
+	if( find ) {   /*  find가 true이면 favorite이라 넣어줌 (즉, 관측소중 관심으로 등록된건 class= "favorite" ) */
+		html = html.replace('{f}', 'favorite');
+	} else {
+		html = html.replace('{f}', 'no_f');   /* 관심등록 아직 안된건 class=" " 로 됨.  */
+	} 
+	
+	
+	
+
+	 
+	
+	
 	var showPopup = function() {
     	infowin.setContent( html );
     	infowin.open(map, marker);
@@ -252,7 +410,9 @@ function addMarker  (map, infowin, marker, station ) {
     daum.maps.event.addListener(marker, 'mouseover', showPopup);
 }
 
-    
+
+	 
+
 </script>
 
 
@@ -296,6 +456,35 @@ function addMarker  (map, infowin, marker, station ) {
 			</tr>
 		</thead>
 		<tbody>
+			
+				<!-- 모달 창으로 기준값 받기 -->
+			<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"> 
+			  <div class="modal-dialog"> <!-- 모달 창 넓이 css -->
+			    <div class="modal-content"> <!-- 모달 창 투명도 제로 css -->
+			      <div class="modal-body">
+			        <div class="form-group">
+			            <label class="control-label">PM10(미세먼지)</label>
+			            	<div class="slidecontainer">   <!--  range sliders 데이터 받는 바 -->
+								<input type="range" min="0" max="210" value="151" class="slider" id="Range10">
+							</div>
+			           		<input type="text" class="form-control" id="Pm10Scanf"  placeholder="입력한 값 초과시 메일로 알려드립니다." value=""/>
+			        </div> 
+			        <div class="form-group">
+			        	<label class="control-label">PM2.5(초미세먼지)</label>
+			         		<div class="slidecontainer">
+			  					<input type="range" min="0" max="110" value="76" class="slider" id="Range25">
+							</div>
+			        	    <input type="text" class="form-control" id="Pm25Scanf"  placeholder="입력한 값 초과시 메일로 알려드립니다." value=""/>
+			         </div>
+			      </div>
+			      	<div class="modal-footer">
+			        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        	<button type="button" class="btn btn-primary" id="addFav" >추가</button>
+			      	</div>
+			    </div>
+			  </div>
+			</div>
+	  
 			<%--
 			<c:forEach items="${data}" var="pm">
 			<tr>

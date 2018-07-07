@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import github.hangming.airdata.dto.FavorStationDto;
 import github.hangming.airdata.dto.Pmdata;
 import github.hangming.airdata.model.UserDto;
 
@@ -57,17 +58,16 @@ public class UserDao implements IUserDao {
 
 
 	@Override
-	public boolean addFavoriteStation( Long user, Integer station) {
+	public boolean addFavoriteStation( Long user, Integer station,Integer pm10_limit, Integer pm25_limit) {
 		// user.getSeq();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("user", user);
 		param.put("station", station);
 		
-		System.out.println("관심등록 해제remove UserDao부분(remove후)"+ param.entrySet() );
+		System.out.println("관심등록 추가"+ param.entrySet() );
 		
-		// TODO 사용자한테서 미세먼지 기준값을 입력받아야함
-		param.put("pm10_limit", 80);
-		param.put("pm25_limit", 40);
+		param.put("pm10_limit", pm10_limit);
+		param.put("pm25_limit", pm25_limit);
 		session.insert("addFavoriteStation", param);
 		return true;
 	}
@@ -80,7 +80,29 @@ public class UserDao implements IUserDao {
 		return session.selectList("UserMapper.getFavoriteStations", userSeq) ;
 	}
 
+	
+	@Override
+	public List<FavorStationDto> getFavoriteStationDetail(Long userSeq){
+		
+		return session.selectList("UserMapper.getFavoriteStationDetail", userSeq);
+	}
 
+	@Override
+	public boolean changePmLimit(Integer pm10Limit, Integer pm25Limit, Long user, Integer station){
+		
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		param.put("pm10Limit", pm10Limit);
+		param.put("pm25Limit", pm25Limit);
+		param.put("user", user);
+		param.put("station", station);
+		
+		session.update("UserMapper.changePmLimit", param);
+		
+		return true;
+	}
+	
+	
 
 	@Override
 	public boolean delectFavoriteStation(Long user, Integer station) {

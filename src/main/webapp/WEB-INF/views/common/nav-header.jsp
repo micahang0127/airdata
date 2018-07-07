@@ -4,7 +4,7 @@
 
  @media (min-width: 768px){    /*  최소 768px, 768px보다 큰 경우*/
 	button > .icon-bar{
-	background-color : #EAEAEA!important;
+	background-color : #b3e5fc!important; /* #EAEAEA */
 	}
  } 
   @media (max-width: 768px){    /*  최대 768px, 768px가 안되는 경우, 768px보다 작은 경우   */
@@ -27,7 +27,7 @@
 			        <span id="icon-bar" class="icon-bar"></span>
 			        <span id="icon-bar" class="icon-bar"></span>                        
 			      </button>
-				<div class="navbar-brand-elem"><a href="<c:url value="/index"/>">맑은 하늘</a></div>
+				<div class="navbar-brand-elem"><a href="<c:url value="/"/>">맑은 하늘</a></div>
 			</div>
 		</div>
 		<c:if test="${not empty LOGIN_USER }">
@@ -39,7 +39,7 @@
 		</c:if>
 		<div class="navbar-collapse collapse" id="menu-body">
 			<ul class="nav navbar-nav navbar-right">
-				<li class=""><a href="<c:url value="/index"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
+				<li class=""><a href="<c:url value="/"/>"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><span class="link-text">Home</span></a></li>
 				<c:if test="${empty LOGIN_USER }">
 				<li><a href="<c:url value="/register"/>"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span><span class="link-text">가입하기</span></a></li>
 				<li><a href="<c:url value="/login"/>"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span><span class="link-text">로그인</span></a></li>
@@ -55,6 +55,9 @@
 </nav>
 <div style="height:50px"></div>
 <script type="text/javascript">
+var ctxpath = '${pageContext.request.contextPath}';
+console.log('Path주소'+ ctxpath);
+
 $(document).ready( function () {
 	
 	/* 

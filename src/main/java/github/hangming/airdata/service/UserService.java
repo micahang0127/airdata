@@ -56,11 +56,11 @@ public class UserService{
 		return dao.getEmailCheck(email);
 	}
 	
-	public UserDto insertUser(UserDto vo){
+	public UserDto insertUser(UserDto vo){				
 		// 1. db에 넣고
 		UserDto user = dao.insertUser(vo);
 		
-		String html = Util.readTemplate("newmember");
+		String html = Util.readTemplate("newmember");				// 회원가입 시 "newmember.html"(template에 저장) 형식으로 메일을 보내줌 
 		html = html.replace("{email}", vo.getEmail());
 		html = html.replace("{pass}", vo.getPassword());
 		
@@ -80,11 +80,16 @@ public class UserService{
 	}
 
 
-	public void addFavoriteStation(Long user, Integer station) {
-		dao.addFavoriteStation(user, station);
+	public void addFavoriteStation(Long user, Integer station, Integer pm10_limit, Integer pm25_limit) {
+		dao.addFavoriteStation(user, station, pm10_limit, pm25_limit);
 		
 		
 	}
+	
+	public void changePmLimit(Integer pm10Limit, Integer pm25Limit, Long user, Integer station){
+		dao.changePmLimit(pm10Limit, pm25Limit, user, station);
+	}
+	
 	
 	public void delectFavoriteStation(Long user, Integer station){
 		

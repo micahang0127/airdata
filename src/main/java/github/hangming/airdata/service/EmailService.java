@@ -46,6 +46,7 @@ public class EmailService {
 			
 			for (int j = 0 ; j < emails.size() ; j ++ ) {
 				String email = emails.get(j);
+				// TODO 직접 메일을 보내면 미세먼지 데이터 업데이트 시간에 영향을 미칠 수 있음
 				sendTestMail(email, title, html);
 				// email > pm 
 			}
@@ -68,8 +69,8 @@ public class EmailService {
         	MimeMessageHelper helper = new MimeMessageHelper(msg, true, "utf-8");
 			helper.setSubject(title);
 			helper.setText(content, true); 
-			helper.setFrom(new InternetAddress("no.rep.for.javatuition@gmail.com", "DDDD", "utf-8"));
-			helper.setTo(new InternetAddress(receiver, "Hello", "utf-8"));
+			helper.setFrom(new InternetAddress("sangpronb1@gmail.com", "운영자", "utf-8"));
+			helper.setTo(new InternetAddress(receiver, "회원님", "utf-8"));
 			
 			mailSender.send(msg); // 여기서 메일 발송을 서버에게 부탁함 
 			

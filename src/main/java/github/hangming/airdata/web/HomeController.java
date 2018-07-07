@@ -36,7 +36,7 @@ public class HomeController {
 	 * @throws JsonProcessingException
 	 */
 
-	@RequestMapping(value = "/index", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model) throws JsonProcessingException  {
 		
 		

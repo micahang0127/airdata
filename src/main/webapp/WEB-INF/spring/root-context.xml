@@ -21,7 +21,7 @@
 		<property name="url" value="jdbc:mysql://localhost:3306/airstation"></property>
 		<property name="username" value="airuser"></property>
 		<property name="password" value="1111"></property>
-<!-- 		<property name="username" value="root"></property>
+	<!-- 	<property name="username" value="root"></property>
 		<property name="password" value="tc1234tc"></property> -->
 	</bean>
 	
@@ -43,8 +43,10 @@
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="port" value="587"></property>
 		<property name="host" value="smtp.gmail.com"></property>
-		<property name="username" value="no.rep.for.javatuition@gmail.com"></property>
-		<property name="password" value="s123456789$"></property>
+		<!-- <property name="username" value="no.rep.for.javatuition@gmail.com"></property>
+		<property name="password" value="s123456789$"></property>    과외 쌤 gmail 계정 -->
+		<property name="username" value="sangpronb1@gmail.com"></property>
+		<property name="password" value="sorkdlfemd1"></property> 
 		<property name="defaultEncoding" value="utf8"></property>
 		<property name="javaMailProperties">
 			<props>

@@ -77,10 +77,11 @@ public class EmailService {
 			mailSender.send(msg); // 여기서 메일 발송을 서버에게 부탁함 
 			
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			throw new RuntimeException("fail", e);
+			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} 
+		}
 		
 	
 	}

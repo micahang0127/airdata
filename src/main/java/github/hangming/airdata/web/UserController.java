@@ -1,6 +1,8 @@
 package github.hangming.airdata.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -108,11 +110,19 @@ public class UserController {
 	
 	@RequestMapping(value="/succRegister")
 	@ResponseBody
-	String succRegister(UserDto vo){
+	Object succRegister(UserDto vo){
 		System.out.println("회원가입성공 콘트롤러 진입 : " + vo.getEmail() +"/ " + vo.getPassword());
-		userService.insertUser(vo);		// 가입메일 발송부분과 연결 
-		System.out.println("새 유저 등록 아이디" + vo.getEmail());
-		return "{\"success\" : true }";
+		Map<String, Object> res = new HashMap<String, Object>();
+		try {
+			userService.insertUser(vo);		// 가입메일 발송부분과 연결 			
+			System.out.println("새 유저 등록 아이디" + vo.getEmail());
+			res.put("success", Boolean.TRUE);
+		} catch ( RuntimeException e ) {
+			res.put("success", Boolean.FALSE);
+			res.put("cause", "FAIL");
+			// return "{\"success\" : false, \"cause\": \"FAIL\" }";
+		}
+		return res;
 	}
 	
 

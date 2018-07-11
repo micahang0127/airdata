@@ -57,8 +57,6 @@ public class UserService{
 	}
 	
 	public UserDto insertUser(UserDto vo){				
-		// 1. db에 넣고
-		UserDto user = dao.insertUser(vo);
 		
 		String html = Util.readTemplate("newmember");				// 회원가입 시 "newmember.html"(template에 저장) 형식으로 메일을 보내줌 
 		html = html.replace("{email}", vo.getEmail());
@@ -71,6 +69,9 @@ public class UserService{
 		 *      https://stackoverflow.com/questions/13514005/how-to-check-mail-address-is-exists-or-not 참조
 		 */
 		emailService.sendTestMail(email, title, html);
+		
+		// 나중에 트랜잭션 설정으로 이 문제를 해결하는 또다른 방법이 있음
+		UserDto user = dao.insertUser(vo);
 		
 		return user;		
 	}

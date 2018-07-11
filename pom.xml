@@ -171,6 +171,18 @@
 		
 	</dependencies>
     <build>
+    	<resources>
+    		<resource>
+    			<directory>src/main/resources</directory>
+    			<filtering>true</filtering>
+    			<excludes>
+    				<exclude>profiles/**</exclude>
+    			</excludes>
+    		</resource>
+    		<resource>
+    			<directory>src/main/resources/profiles/${db.dir}</directory>
+    		</resource>
+    	</resources>
         <plugins>
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
@@ -208,4 +220,18 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+    	<profile>
+    		<id>dev</id>
+    		<properties>
+    			<db.dir>dev</db.dir>
+    		</properties>
+    	</profile>
+    	<profile>
+    		<id>prod</id>
+    		<properties>
+    			<db.dir>prod</db.dir>
+    		</properties>
+    	</profile>
+    </profiles>
 </project>

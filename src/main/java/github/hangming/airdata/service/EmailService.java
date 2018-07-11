@@ -30,7 +30,7 @@ public class EmailService {
 	 */
 	public void sendNotification ( List<Pmdata> data) {
 //		String html = "dkdkdkdkdkdkdkdkdkdk"
-		System.out.println("[메일전송 여기서 합니다 ] 구현 안되었음~");
+		System.out.println("[메일전송 여기서 합니다 ]");
 		// 1. 각각의 관측소 데이터에 대해서
 		for(int i=0; i< data.size(); i++){
 			Pmdata pm = data.get(i);
@@ -38,11 +38,14 @@ public class EmailService {
 			List<String> emails =  userDao.getfavEmail( pm );
 			
 			String html = Util.readTemplate("pm-notif");
+			html = html.replace("{station}", pm.getStationName());
 			html = html.replace("{time}", pm.getTime());
 			html = html.replace("{pm25}", pm.getPm25());
 			html = html.replace("{pm10}", pm.getPm10());
 			
 			String title = "[미세먼지 현황] " + pm.getStationName() ;
+			
+			System.out.println("메일 보내기 지역확인"+ pm.getStationName());
 			
 			for (int j = 0 ; j < emails.size() ; j ++ ) {
 				String email = emails.get(j);
@@ -64,7 +67,6 @@ public class EmailService {
 		MimeMessage msg = mailSender.createMimeMessage();
 //		msg.setSubject(title); 
 		
-		
         try {
         	MimeMessageHelper helper = new MimeMessageHelper(msg, true, "utf-8");
 			helper.setSubject(title);
@@ -79,7 +81,7 @@ public class EmailService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} 
-
 		
+	
 	}
 }

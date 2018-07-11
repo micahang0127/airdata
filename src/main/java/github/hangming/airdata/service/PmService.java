@@ -74,12 +74,13 @@ public class PmService {
 				String pm25Val = each.select("pm25Value").text();
 				String datatime = each.select("dataTime").text();
 				
-				// System.out.println(stationName + ", " + pm10Val + ", " + pm25Val);
+				System.out.println("loadSidoData 이메일연결"+stationName + ", " + pm10Val + ", " + pm25Val);
 				// (datatime - station)
 				Pmdata pd = new Pmdata();
 				pd.setPm10( pm10Val );
 				pd.setPm25( pm25Val);
 				pd.setTime(datatime);
+				pd.setStationName(stationName);
 				
 				System.out.println(sido + " : " + stationName);
 				Station station = pmDao.findStationByName ( sido, stationName);

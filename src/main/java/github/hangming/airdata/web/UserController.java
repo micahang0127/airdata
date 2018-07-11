@@ -110,7 +110,7 @@ public class UserController {
 	@ResponseBody
 	String succRegister(UserDto vo){
 		System.out.println("회원가입성공 콘트롤러 진입 : " + vo.getEmail() +"/ " + vo.getPassword());
-		userService.insertUser(vo);
+		userService.insertUser(vo);		// 가입메일 발송부분과 연결 
 		System.out.println("새 유저 등록 아이디" + vo.getEmail());
 		return "{\"success\" : true }";
 	}

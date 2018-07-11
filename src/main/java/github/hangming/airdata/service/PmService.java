@@ -2,6 +2,7 @@ package github.hangming.airdata.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.Connection;
@@ -10,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,15 +20,23 @@ import org.springframework.stereotype.Service;
 import github.hangming.airdata.dao.IPmDao;
 import github.hangming.airdata.dto.Pmdata;
 import github.hangming.airdata.dto.Station;
+import github.hangming.airdata.web.HomeController;
 
 @Service
 public class PmService {
 
+	private static final Logger logger = LoggerFactory.getLogger(PmService.class);
+	
 	@Autowired
 	IPmDao pmDao;
 
 	@Autowired
 	EmailService emailService ;
+	
+	List<String> apiKeys = Arrays.asList(
+			"obOHqOH23fIebpV3irUaPzNNmsJHYrQdIGCjkhYLZuDahubkfn4MNrwxSLCdPHGbgTlFkcpSL4phmqkddkQmJQ%3D%3D",
+			"bbbbb");
+	int idx = 0;
 	
 	@Scheduled(cron="0 10,20,30,40 * * * ?")
 	//               sec min hour date, month  
@@ -52,8 +63,11 @@ public class PmService {
 	}
 	
 	public List<Pmdata> loadSidoData ( String sido ) {
-		String template =  "http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=obOHqOH23fIebpV3irUaPzNNmsJHYrQdIGCjkhYLZuDahubkfn4MNrwxSLCdPHGbgTlFkcpSL4phmqkddkQmJQ%3D%3D&numOfRows=100&pageSize=10&pageNo=1&startPage=1&sidoName={}&ver=1.3";
-		String url = template.replace("{}", sido );
+		String template =  "http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey={KEY}&numOfRows=100&pageSize=10&pageNo=1&startPage=1&sidoName={}&ver=1.3";
+		
+		String url = template.replace("{}", sido )
+				             .replace("{KEY}", apiKeys.get(idx));
+		
 		
 		Connection con = Jsoup.connect(url);
 		
@@ -63,6 +77,20 @@ public class PmService {
 		Document doc;
 		try {
 			doc = con.get();
+			Elements rCode = doc.select("header > resultCode ");
+			// TODO 하나의 메소드가 두 가지 일을 하고 있음 . 이렇게 하면 나중에 안좋음!
+			// API 한도 초과 등의 예와 사항은 AirApiService 에서 처리하고 이 클래스에서는 기존에 하던대로 응답만 처리하면 됨
+			if( rCode.text().equals("22")) {
+				// TODO 코드가 중복됨
+				idx += 1;
+				logger.debug("api key replaced!");
+				url = template.replace("{}", sido )
+			             .replace("{KEY}", apiKeys.get(idx));
+				con = Jsoup.connect(url);
+				con.parser(Parser.xmlParser())
+				   .timeout(30 * 1000);
+				doc = con.get();
+			}
 			Elements item = doc.select("body > items > item");
 			
 			// 사용자들에게 이메일을 전송할 데이터들

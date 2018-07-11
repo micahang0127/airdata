@@ -95,7 +95,7 @@ select{
 <script type="text/javascript">
 var ctxpath = '${pageContext.request.contextPath}';
 
-function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
+function addStation ( stationId, anchor, pm10_limit, pm25_limit, reload ) {
 	var pm10 = 80;
 	var pm25 = 40;
 	
@@ -115,6 +115,9 @@ function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
 				anchor.removeClass('no_f');
 				anchor.addClass('favorite');
 				alert('관심지역에 추가되었습니다.');
+				if ( reload) {
+					location.reload();
+				}
 			}else{
 				alert('추가에 실해 하였습니다 . \n 로그인 여부를 확인해 주세요.');
 			}
@@ -144,6 +147,49 @@ function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
 			}		
 		}
 	 });
+ }
+ 
+ function clickFavStar ( anchor, reload ) {
+	if ( anchor.hasClass('favorite') ) {  	// a태그의 class명이 = "fovorite"( 관심등록 된 상태) 이면,  
+			var id = anchor.attr('id'); 
+			removeStation( id.substring(1), anchor ); // substring(1) => 문자열(id) 둘째자리부터 끝까지를 가져온다.(앞에  s가 있음으로)
+			if ( reload ) {
+				// reload current page
+				location.reload();
+			}
+	}else {
+		// modal 로 기준치 받기
+		$('#Modal').modal("toggle");
+		
+		var slider10 = document.getElementById("Range10");
+		var slider25= document.getElementById("Range25");
+
+		var Scanf10= document.getElementById("Pm10Scanf");
+		var Scanf25= document.getElementById("Pm25Scanf");
+
+		$(Scanf10).val(slider10.value);
+		$(Scanf25).val(slider25.value);
+		
+		// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
+	 	slider25.oninput = function() {
+			 $(Scanf25).val(slider25.value);
+	 	} 
+		slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
+			$(slider10).val(Scanf10.value);				 
+		}  
+	 	Scanf25.oninput = function() {
+			$(slider25).val(Scanf25.value);				 
+		}	 			
+		slider10.oninput = function() {		/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
+			 $(Scanf10).val(slider10.value);
+		 } 
+		$('#addFav').on('click',function(){
+			var id = anchor.attr('id');
+			addStation(id.substring(1), anchor, slider10.value , slider25.value, reload );
+			$('#Modal').modal('hide');
+			
+		});
+	}
  }
  function loadSidoData ( sido ) {
 	 
@@ -201,77 +247,9 @@ function addStation ( stationId, anchor, pm10_limit, pm25_limit ) {
     			// console.log('별클릭');
     			var icon = $(e.target); 				//(지금)클릭 된 애가 누군지(이벤트를 발생시킨 녀석) 
     			var anchor = icon.parent(); 			// icon에 있는 부모태그를 찾아간다. => 여기선 a태그
-    			if ( anchor.hasClass('favorite') ) {  	// a태그의 class명이 = "fovorite"( 관심등록 된 상태) 이면,  
-    				
-   					/*	$('#location a > i').on('click', function(e) { ... } 
-   						★★★ (X) => 관심등록 된것 한번더 클릭하면 해제되는 함수로 이동하는게 아님!!!
-   						위에서도 설명 했듯, 이 코드는 클릭하면 오는게 아니라 처음부터 페이지가 로딩 될때 부터 준비되고 , 클릭이 되면 이 부분 바로 밑부분으로 들어가 실행된다.!!!
-					*/
-				
-   					var id = anchor.attr('id'); 
-   					removeStation( id.substring(1), anchor ); // substring(1) => 문자열(id) 둘째자리부터 끝까지를 가져온다.(앞에  s가 있음으로) 
-   	
-    			
-    			}else {
-    				
-    				
-    				
-    	    		// modal 로 기준치 받기
-    				$('#Modal').modal("toggle");
-    	    		
-    				var slider10 = document.getElementById("Range10");
-    				var slider25= document.getElementById("Range25");
-
-    				var Scanf10= document.getElementById("Pm10Scanf");
-    				var Scanf25= document.getElementById("Pm25Scanf");
-    		
-    				$(Scanf10).val(slider10.value);
-    				$(Scanf25).val(slider25.value);
-    				
-    				// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
-    			 	 slider25.oninput = function() {
-    					 $(Scanf25).val(slider25.value);
-    			 	} 
-    				  slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
-    					 $(slider10).val(Scanf10.value);				 
-    				 }  
-    			 	 Scanf25.oninput = function() {
-    				 	$(slider25).val(Scanf25.value);				 
-    				 }	 			
-    				slider10.oninput = function() {		/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
-    					 $(Scanf10).val(slider10.value);
-    				 } 
-    				 
-    				 
-    				 
-    				
-    				$('#addFav').on('click',function(){
-    				
-	    				var id = anchor.attr('id');
-    					addStation(id.substring(1), anchor, slider10.value , slider25.value );
-    					$('#Modal').modal('hide');
-    					
-    				});
-    				
-    				}
-    			
-    		
-    			
-    			
-    			
-    			/*
-    			if( anchor.hasClass('favorite') ){
-    				anchor.removeClass('favorite');
-    			}else{
-    				anchor.addClass('favorite');    				
-    			}
-    			*/
-    			// anchor.toggleClass ( 'favorite');
-    			
+    			// here
+    			clickFavStar( anchor );
     		}); 
-    			
-    			
-    	
     	}, 
     	error : function ( xhr, state, error ) {
 			console.log ( xhr );        		
@@ -361,10 +339,9 @@ function drawStation ( stations, favorites) {
 	}
 	map.setBounds(bounds);
 }
-
 function addMarker  (map, infowin, marker, station, favors) {
 
-	var html = '<div style="margin-top:10px;"><p><b>&nbsp;&nbsp;' + station.stationName + '</b>&nbsp;&nbsp;<a id="s{sido}" class="{f}"  href="#"><i class="fas fa-star"></i></a></p>';
+	var html = '<div style="margin-top:10px;"><p><b>&nbsp;&nbsp;' + station.stationName + '</b>&nbsp;&nbsp;<a id="s{sido}" class="{f}"  href="#" onclick="clickFavStar ( $(this), true ); return false;"><i class="fas fa-star"></i></a></p>';
 	var pm25 = station.pm25;
 	var pm10 = station.pm10; 
 	var color25 = gradePm25(station.pm25).color;
@@ -395,12 +372,6 @@ function addMarker  (map, infowin, marker, station, favors) {
 	} else {
 		html = html.replace('{f}', 'no_f');   /* 관심등록 아직 안된건 class=" " 로 됨.  */
 	} 
-	
-	
-	
-
-	 
-	
 	
 	var showPopup = function() {
     	infowin.setContent( html );

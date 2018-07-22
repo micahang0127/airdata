@@ -171,18 +171,18 @@ function addStation ( stationId, anchor, pm10_limit, pm25_limit, reload ) {
 		$(Scanf25).val(slider25.value);
 		
 		// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
-	 	slider25.oninput = function() {
-			 $(Scanf25).val(slider25.value);
-	 	} 
-		slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
-			$(slider10).val(Scanf10.value);				 
-		}  
-	 	Scanf25.oninput = function() {
-			$(slider25).val(Scanf25.value);				 
-		}	 			
 		slider10.oninput = function() {		/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
 			 $(Scanf10).val(slider10.value);
 		 } 
+		Scanf10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
+			$(slider10).val(Scanf10.value);				 
+		}  
+	 	slider25.oninput = function() {
+			 $(Scanf25).val(slider25.value);
+	 	} 
+	 	Scanf25.oninput = function() {
+			$(slider25).val(Scanf25.value);				 
+		}	 			
 		$('#addFav').on('click',function(){
 			var id = anchor.attr('id');
 			addStation(id.substring(1), anchor, slider10.value , slider25.value, reload );

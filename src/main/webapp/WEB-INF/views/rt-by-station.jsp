@@ -173,13 +173,13 @@ function drawChart() {
 
 		for(i= srcData.data.length-1; i >= 0; i--){
 			// 2018-03-31 19:00:00.0
-			var hh = srcData.data[i].time.substring(11, 16);
+			var hh = srcData.data[i].time.substring(5, 16);
+				hh = hh.replace("-","/");
 			var pm10 = parseInt(srcData.data[i].pm10);
 			var pm25 = parseInt(srcData.data[i].pm25);
 			pmData.push ( [hh, pm25, pm10] );	
 		}
 		
-		pmData.push ( ['-', 0, 1 ] );
 		
 		 /*   ['11:00',  45,      40],
 		    ['10:00',  11,      46],
@@ -304,18 +304,18 @@ $(function() {
 				$(Scanf25).val(slider25.value);
 				
 				// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
-				 slider25.oninput = function() {
-					 $(Scanf25).val(slider25.value);
-			 	}
-				 slider10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
+				 Scanf10.oninput = function() {	/*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
 					 $(slider10).val(Scanf10.value);				 
 				 }
-				 Scanf25.oninput = function() {
-				 	$(slider25).val(Scanf25.value);				 
-				 }				
 				 slider10.oninput = function() {	/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
 					 $(Scanf10).val(slider10.value);
 				 }
+				 slider25.oninput = function() {
+					 $(Scanf25).val(slider25.value);
+			 	}
+				 Scanf25.oninput = function() {
+				 	$(slider25).val(Scanf25.value);				 
+				 }				
 				 
 				 
 				 

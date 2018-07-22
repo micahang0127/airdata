@@ -319,19 +319,19 @@ ul.tabs li.active {
 		    				// !!! 모달창 range slider 사용함으로 사용자릂 편리하게.
 
 		    				/*  바가 움직이는 값을 실시간으로 써줌(움직이는대로) */
+		    				  Scanf10.oninput = function() {	
+		    					 $(slider10).val(Scanf10.value);				 
+		    				 } 
+		    				  slider10.oninput = function() {	
+		    					 $(Scanf10).val(slider10.value);
+		    				 } 
 		    				 slider25.oninput = function() {
 		    					 $(Scanf25).val(slider25.value);
 		    			 	}
 		    				 /*  빈칸에 입력받는 값을 실시간으로 range slider(바) 값으로 표현해줌  */
-		    				  slider10.oninput = function() {	
-		    					 $(slider10).val(Scanf10.value);				 
-		    				 } 
 		    				 Scanf25.oninput = function() {
 		    				 	$(slider25).val(Scanf25.value);				 
 		    				 }
-		    				  slider10.oninput = function() {	
-		    					 $(Scanf10).val(slider10.value);
-		    				 } 
 		    				 
 		    				var pm10Limit = favAll[i].pm10Limit; 
 		    				var pm25Limit = favAll[i].pm25Limit; 

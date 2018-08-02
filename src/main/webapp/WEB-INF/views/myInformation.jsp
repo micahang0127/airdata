@@ -123,6 +123,11 @@ ul.tabs li.active {
 }
 
 
+#pw, #pw2{
+	width: 300px;
+}
+
+
 
 .modal-dialog{
 	width: 300px;
@@ -312,6 +317,8 @@ ul.tabs li.active {
 							$('#station_M').html(favAll[i].location);
 		    				$(Scanf10).val(favAll[i].pm10Limit);
 		    				$(Scanf25).val(favAll[i].pm25Limit);
+		    				$(slider10).val(favAll[i].pm10Limit);
+		    				$(slider25).val(favAll[i].pm25Limit);
 		    				
 		    				
 		    				
@@ -333,26 +340,40 @@ ul.tabs li.active {
 		    				 	$(slider25).val(Scanf25.value);				 
 		    				 }
 		    				 
-		    				var pm10Limit = favAll[i].pm10Limit; 
-		    				var pm25Limit = favAll[i].pm25Limit; 
+		    			//	var pm10Limit = favAll[i].pm10Limit; 
+		    			//	var pm25Limit = favAll[i].pm25Limit; 
 		    				var station = favAll[i].station; 
-	    				 
-		    				$('#updataFav').click(function(){
-
-		    					pmUpdata( Scanf10.value , Scanf25.value , station );	
+	    				 	
+		    			
+		    		
+		    			 	$('#updataFav').click(function(){
+		    			 		
+								if(station != null){
+		    						pmUpdata( Scanf10.value , Scanf25.value , station );
+								}
+								station = null;
+								
 		    					$('#Modal').modal('hide');
-		    					
+		    			 	
 		    				});
-	    				 	$('.btn-remove').click(function(){
-	    				 		removeStation( station );    
+		    			 	
+		    			
+
+		    				$('.btn-remove').click(function(){
+		    				
+		    					if(station != null){
+	    				 			removeStation( station );
+		    					}
 	    				 		$('#Modal').modal('hide');
 	    				 		window.location.reload();
 	    				 	})
-	    				 	
+	    				 	 
 	    				 
 					
 						}
 					}
+					
+					
 					
 					
 					event.stopPropagation();
@@ -367,8 +388,11 @@ ul.tabs li.active {
 	});	
 	
 	
+	
 	/*  수정으로 변경하기!!   controller에도 추가하기 */
 	function pmUpdata ( pm10Limit, pm25Limit , station ) {
+		
+		console.log('upupup');
 		
 		$.ajax({
 			url : ctxpath + '/pmUpdata',
@@ -554,7 +578,7 @@ ul.tabs li.active {
 										      	<div class="modal-footer">
 										        	<button type="button" class="btn btn-remove" >삭제</button>
 										        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										        	<button type="button" class="btn btn-primary" id="updataFav" >수정</button>
+										        	<button type="button" class="btn btn-primary" id="updataFav">수정</button>
 										      	</div>
 										    </div>
 										  </div>
